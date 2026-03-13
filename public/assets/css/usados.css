@@ -1,0 +1,247 @@
+/* ========================================
+   CSS ESPECÍFICO - SUBSITIO VICAR USADOS
+   ======================================== */
+
+/* Separador decorativo */
+.separator {
+    position: relative;
+    margin: 20px auto;
+    width: 100%;
+    height: 10px;
+}
+
+.separator:after {
+    width: 100px;
+    display: block;
+    margin: auto;
+    content: "";
+    height: 1px;
+    background: #db2d2e;
+    bottom: 0px;
+    left: 50%;
+    transition: width .8s ease, background-color .8s ease;
+}
+
+.separator:before {
+    content: '';
+    display: block;
+    margin: auto;
+    left: 50%;
+    height: 1px;
+    width: 50px;
+    bottom: -15px;
+    background: #db2d2e;
+    transition: width .8s ease, background-color .8s ease;
+    margin-bottom: 6px;
+}
+
+section:hover .separator:before {
+    width: 100px;
+    left: 0;
+}
+
+section:hover .separator:after {
+    width: 50px;
+    left: 0;
+}
+
+/* Card de vehículos usados */
+.car-item {
+    background: #f8f8f8;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.car-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.car-image {
+    position: relative;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.car-image a {
+    display: block;
+    text-decoration: none;
+}
+
+.car-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.car-image a:hover img {
+    transform: scale(1.05);
+}
+
+/* Overlay banner - DESHABILITADO (ya no se usa)
+.car-overlay-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.car-image:hover .car-overlay-banner {
+    opacity: 1;
+}
+
+.car-overlay-banner ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.car-overlay-banner ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: #db2d2e;
+    color: white;
+    border-radius: 50%;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.car-overlay-banner ul li a:hover {
+    background: #a00000;
+    transform: rotate(360deg);
+}
+*/
+
+.car-content {
+    padding: 25px 20px;
+}
+
+.car-content a {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 15px;
+    transition: color 0.3s ease;
+}
+
+.car-content a:hover {
+    color: #db2d2e;
+}
+
+.price {
+    margin: 20px 0;
+}
+
+.price .new-price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #db2d2e;
+}
+
+/* Botón CTA Me interesa - DESHABILITADO (ya no se usa)
+.cta-usados-container {
+    border: 1px solid #db2d2e;
+    background: #db2d2e;
+    color: white;
+    padding: 10px;
+    margin-top: 20px;
+    display: block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cta-usados-container:hover {
+    background: white;
+    color: #db2d2e;
+}
+
+.cta-usados-text {
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    display: block;
+}
+*/
+
+/* Estilo general de background */
+.gray-bg {
+    background: #f8f8f8;
+}
+
+/* Modal específico para usados - DESHABILITADO (ya no se usa)
+#modalUsados .modal-header {
+    background-color: #cc0000;
+    border-bottom: none;
+}
+
+#modalUsados .modal-title {
+    color: white;
+    font-weight: 700;
+}
+
+#modalUsados .modal-body {
+    padding: 30px;
+}
+
+#modalUsados .form-control {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+}
+
+#modalUsados .form-control:focus {
+    border-color: #cc0000;
+    box-shadow: 0 0 0 0.2rem rgba(204, 0, 0, 0.25);
+}
+*/
+
+/* Responsive */
+@media (max-width: 768px) {
+    .car-content a {
+        font-size: 16px;
+    }
+    
+    .price .new-price {
+        font-size: 20px;
+    }
+    
+    .separator:after,
+    .separator:before {
+        width: 60px !important;
+    }
+    
+    /* 2 columnas en tablet */
+    .col-md-4 {
+        width: 50%;
+    }
+}
+
+@media (max-width: 576px) {
+    /* 1 columna en móvil */
+    .col-sm-6 {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .car-item {
+        margin-bottom: 20px;
+    }
+    
+    .car-content {
+        padding: 20px 15px;
+    }
+}

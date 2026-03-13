@@ -1,0 +1,27 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Evitar loops de redirección
+    RewriteCond %{ENV:REDIRECT_STATUS} ^$
+    
+    # Si no es un archivo o directorio existente
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    
+    # Enviar todo a index.php en la raíz
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Proteger archivos sensibles
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "^composer\.(json|lock)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deshabilitar listado de directorios
+Options -Indexes
