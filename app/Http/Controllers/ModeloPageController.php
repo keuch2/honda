@@ -30,7 +30,11 @@ class ModeloPageController extends Controller
             $q->where('is_active', true)->orderBy('orden');
         }, 'secciones.slides', 'versiones.colores']);
 
-        return view('pages.modelo-show', compact('modelo'));
+        return view('pages.modelo-show', [
+            'modelo' => $modelo,
+            'currentModelo' => $modelo,
+            'isLanding' => false,
+        ]);
     }
 
     public function landing(LandingPage $landingPage)
@@ -39,9 +43,22 @@ class ModeloPageController extends Controller
             abort(404);
         }
 
-        $landingPage->load('modelo.secciones.slides');
+        $modelo = $landingPage->modelo;
 
-        return view('pages.landing', compact('landingPage'));
+        if (!$modelo) {
+            abort(404);
+        }
+
+        $modelo->load(['secciones' => function ($q) {
+            $q->where('is_active', true)->orderBy('orden');
+        }, 'secciones.slides', 'versiones.colores']);
+
+        return view('pages.modelo-show', [
+            'modelo' => $modelo,
+            'currentModelo' => $modelo,
+            'isLanding' => true,
+            'landingPage' => $landingPage,
+        ]);
     }
 
     public function submitLanding(Request $request, LandingPage $landingPage)
@@ -109,13 +126,14 @@ class ModeloPageController extends Controller
         $modelo = Modelo::where('nombre', $data['modelo'])->first();
 
         Lead::create([
+            'landing_page_id' => $request->input('landing_page_id'),
             'modelo_id' => $modelo?->id,
             'nombre' => $data['nombre'],
             'email' => $data['email'],
             'telefono' => $data['telefono'],
             'ciudad' => $data['ciudad'],
             'modelo_consultado' => $data['modelo'],
-            'fuente' => 'testdrive',
+            'fuente' => $request->input('landing_page_id') ? 'landing-testdrive' : 'testdrive',
             'comentarios' => $data['comentarios'] ?? null,
             'ip_address' => $request->ip(),
         ]);
@@ -154,13 +172,14 @@ class ModeloPageController extends Controller
         $modelo = Modelo::where('nombre', $data['modelo'])->first();
 
         Lead::create([
+            'landing_page_id' => $request->input('landing_page_id'),
             'modelo_id' => $modelo?->id,
             'nombre' => $data['nombre'],
             'email' => $data['email'],
             'telefono' => $data['telefono'],
             'ciudad' => $data['ciudad'],
             'modelo_consultado' => $data['modelo'],
-            'fuente' => 'cotizar',
+            'fuente' => $request->input('landing_page_id') ? 'landing-cotizar' : 'cotizar',
             'comentarios' => $data['comentarios'] ?? null,
             'ip_address' => $request->ip(),
         ]);

@@ -105,22 +105,33 @@
                 <label for="td-ciudad">Ciudad *</label>
                 <input type="text" id="td-ciudad" name="ciudad" required>
             </div>
-            <div class="form-group">
-                <label for="td-modelo">Modelo *</label>
-                <select id="td-modelo" name="modelo" required>
-                    <option value="">Seleccione un modelo</option>
-                    @if(isset($activeModelos))
-                        @foreach($activeModelos as $m)
-                            <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
-                        @endforeach
-                    @else
-                        <option value="CR-V">CR-V</option>
-                        <option value="CR-V e:HEV">CR-V e:HEV</option>
-                        <option value="HR-V">HR-V</option>
-                        <option value="Pilot">Pilot</option>
-                    @endif
-                </select>
-            </div>
+            @if(isset($currentModelo))
+                <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
+                @if(isset($isLanding) && $isLanding && isset($landingPage))
+                    <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
+                @endif
+                <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" value="{{ $currentModelo->nombre }}" disabled style="background: #f0f0f0;">
+                </div>
+            @else
+                <div class="form-group">
+                    <label for="td-modelo">Modelo *</label>
+                    <select id="td-modelo" name="modelo" required>
+                        <option value="">Seleccione un modelo</option>
+                        @if(isset($activeModelos))
+                            @foreach($activeModelos as $m)
+                                <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
+                            @endforeach
+                        @else
+                            <option value="CR-V">CR-V</option>
+                            <option value="CR-V e:HEV">CR-V e:HEV</option>
+                            <option value="HR-V">HR-V</option>
+                            <option value="Pilot">Pilot</option>
+                        @endif
+                    </select>
+                </div>
+            @endif
             <div class="form-group">
                 <label for="td-comentarios">Comentarios</label>
                 <textarea id="td-comentarios" name="comentarios" rows="4"></textarea>
@@ -152,22 +163,33 @@
                 <label for="cot-ciudad">Ciudad *</label>
                 <input type="text" id="cot-ciudad" name="ciudad" required>
             </div>
-            <div class="form-group">
-                <label for="cot-modelo">Modelo *</label>
-                <select id="cot-modelo" name="modelo" required>
-                    <option value="">Seleccione un modelo</option>
-                    @if(isset($activeModelos))
-                        @foreach($activeModelos as $m)
-                            <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
-                        @endforeach
-                    @else
-                        <option value="CR-V">CR-V</option>
-                        <option value="CR-V e:HEV">CR-V e:HEV</option>
-                        <option value="HR-V">HR-V</option>
-                        <option value="Pilot">Pilot</option>
-                    @endif
-                </select>
-            </div>
+            @if(isset($currentModelo))
+                <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
+                @if(isset($isLanding) && $isLanding && isset($landingPage))
+                    <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
+                @endif
+                <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" value="{{ $currentModelo->nombre }}" disabled style="background: #f0f0f0;">
+                </div>
+            @else
+                <div class="form-group">
+                    <label for="cot-modelo">Modelo *</label>
+                    <select id="cot-modelo" name="modelo" required>
+                        <option value="">Seleccione un modelo</option>
+                        @if(isset($activeModelos))
+                            @foreach($activeModelos as $m)
+                                <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
+                            @endforeach
+                        @else
+                            <option value="CR-V">CR-V</option>
+                            <option value="CR-V e:HEV">CR-V e:HEV</option>
+                            <option value="HR-V">HR-V</option>
+                            <option value="Pilot">Pilot</option>
+                        @endif
+                    </select>
+                </div>
+            @endif
             <div class="form-group">
                 <label for="cot-comentarios">Comentarios</label>
                 <textarea id="cot-comentarios" name="comentarios" rows="4"></textarea>

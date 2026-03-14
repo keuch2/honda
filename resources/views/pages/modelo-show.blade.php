@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', $modelo->meta_title ?: $modelo->displayName() . ' - Honda Paraguay')
+@section('title', ($isLanding ?? false) ? (($landingPage->meta_title ?? '') ?: $modelo->displayName() . ' - Honda Paraguay') : ($modelo->meta_title ?: $modelo->displayName() . ' - Honda Paraguay'))
 
 @push('styles')
 @if($modelo->meta_description)
@@ -22,8 +22,8 @@
             @endif
             
             <div class="hero-card-actions">
-                <button class="btn btn-red open-testdrive">Agendá tu Test Drive</button>
-                <button class="btn btn-red open-cotizar">Me interesa este vehículo</button>
+                <button class="btn btn-red open-testdrive" data-modelo="{{ $modelo->nombre }}">Agendá tu Test Drive</button>
+                <button class="btn btn-red open-cotizar" data-modelo="{{ $modelo->nombre }}">Me interesa este vehículo</button>
             </div>
         </div>
     </section>
@@ -52,14 +52,10 @@
                 @php
                     $carouselId = 'carousel' . \Illuminate\Support\Str::studly($seccion->anchor);
                     $isTextLeft = $seccion->layout === 'text-left';
-                    $gridStyle = $isTextLeft
-                        ? ''
-                        : 'style="display: grid; grid-template-columns: 60% 40%; gap: 0; align-items: stretch;"';
                 @endphp
 
-                <div id="{{ $carouselId }}" {!! $isTextLeft ? '' : $gridStyle !!}>
+                <div id="{{ $carouselId }}" @if(!$isTextLeft) style="display: grid; grid-template-columns: 60% 40%; gap: 0; align-items: stretch;" @endif>
                     @if(!$isTextLeft)
-                        {{-- Images first for text-right layout --}}
                         <div class="carousel-images-diseno">
                             @foreach($seccion->slides as $slideIndex => $slide)
                                 <img class="carousel-img-diseno {{ $slideIndex === 0 ? 'active' : '' }}"
@@ -83,7 +79,7 @@
                                             <button class="carousel-btn carousel-prev-{{ $seccion->anchor }}"><i class="fas fa-chevron-left"></i></button>
                                             <div class="carousel-indicators">
                                                 @foreach($seccion->slides as $dotIndex => $dot)
-                                                    <span class="indicator-dot {{ $dotIndex === $slideIndex ? 'active' : '' }}" data-slide="{{ $dotIndex }}"></span>
+                                                    <span class="indicator-dot {{ $dotIndex === 0 ? 'active' : '' }}" data-slide="{{ $dotIndex }}"></span>
                                                 @endforeach
                                             </div>
                                             <button class="carousel-btn carousel-next-{{ $seccion->anchor }}"><i class="fas fa-chevron-right"></i></button>
@@ -95,7 +91,6 @@
                     </div>
 
                     @if($isTextLeft)
-                        {{-- Images after text for text-left layout --}}
                         <div class="carousel-images-diseno">
                             @foreach($seccion->slides as $slideIndex => $slide)
                                 <img class="carousel-img-diseno {{ $slideIndex === 0 ? 'active' : '' }}"
@@ -154,12 +149,12 @@
                         
                         @foreach($modelo->versiones as $versionIndex => $version)
                             @if($version->colores->isNotEmpty())
-                                <div class="color-selector {{ $versionIndex === 0 ? 'active' : '' }}" data-version="{{ $version->slug }}">
+                                <div class="color-selector {{ $versionIndex === 0 ? '' : '' }}" data-version="{{ $version->slug }}" @if($versionIndex > 0) style="display: none;" @endif>
                                     @foreach($version->colores as $colorIndex => $color)
-                                        <button class="color-dot {{ $colorIndex === 0 ? 'active' : '' }}"
+                                        <button class="color-option {{ $colorIndex === 0 ? 'active' : '' }}"
                                                 data-version="{{ $version->slug }}"
                                                 data-color="{{ \Illuminate\Support\Str::slug($color->nombre) }}"
-                                                @if($color->hex_code) style="background-color: {{ $color->hex_code }}" @endif
+                                                style="background: {{ $color->hex_code ?? '#ccc' }}; {{ $colorIndex === 0 ? 'border: 2px solid var(--honda-red);' : '' }}"
                                                 title="{{ $color->nombre }}">
                                         </button>
                                     @endforeach

@@ -517,57 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Manejar envío de formulario Test Drive
-    const formTestDrive = document.getElementById('formTestDrive');
-    if (formTestDrive) {
-        formTestDrive.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = {
-                nombre: document.getElementById('td-nombre').value,
-                telefono: document.getElementById('td-telefono').value,
-                email: document.getElementById('td-email').value,
-                ciudad: document.getElementById('td-ciudad').value,
-                modelo: document.getElementById('td-modelo').value,
-                comentarios: document.getElementById('td-comentarios').value
-            };
-            
-            console.log('Solicitud Test Drive:', formData);
-            
-            // Aquí iría la lógica para enviar el formulario
-            alert('¡Gracias! Tu solicitud de Test Drive ha sido enviada. Nos contactaremos contigo pronto.');
-            
-            modalTestDrive.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            formTestDrive.reset();
-        });
-    }
-    
-    // Manejar envío de formulario Cotización
-    const formCotizar = document.getElementById('formCotizar');
-    if (formCotizar) {
-        formCotizar.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = {
-                nombre: document.getElementById('cot-nombre').value,
-                telefono: document.getElementById('cot-telefono').value,
-                email: document.getElementById('cot-email').value,
-                ciudad: document.getElementById('cot-ciudad').value,
-                modelo: document.getElementById('cot-modelo').value,
-                comentarios: document.getElementById('cot-comentarios').value
-            };
-            
-            console.log('Solicitud Cotización:', formData);
-            
-            // Aquí iría la lógica para enviar el formulario
-            alert('¡Gracias! Tu solicitud de cotización ha sido enviada. Nos contactaremos contigo pronto.');
-            
-            modalCotizar.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            formCotizar.reset();
-        });
-    }
+    // Form submissions are handled by the dynamic AJAX setup at the bottom of this file
     
     // ===== BOTONES DEL HERO =====
     const heroButtons = document.querySelectorAll('.btn-hero');
@@ -707,86 +657,210 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ===== CARRUSELES DE MODELOS (HR-V, WR-V, etc.) =====
+// ===== CARRUSELES DE MODELOS (auto-discovery dinámico) =====
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Función genérica para inicializar carruseles
-    function initCarousel(carouselId, prevClass, nextClass) {
-        const slides = document.querySelectorAll(`#${carouselId} .carousel-slide-diseno`);
-        const images = document.querySelectorAll(`#${carouselId} .carousel-img-diseno`);
-        const prevBtns = document.querySelectorAll(`.${prevClass}`);
-        const nextBtns = document.querySelectorAll(`.${nextClass}`);
-        
+
+    // Función genérica para inicializar un carrusel dentro de un contenedor
+    function initCarousel(container) {
+        const slides = container.querySelectorAll('.carousel-slide-diseno');
+        const images = container.querySelectorAll('.carousel-img-diseno');
+
         if (slides.length === 0) return;
-        
+
         let currentSlide = 0;
-        
+
         function showSlide(index) {
-            // Ocultar todos los slides e imágenes
-            slides.forEach(slide => {
-                slide.style.display = 'none';
-                slide.classList.remove('active');
-            });
-            images.forEach(img => img.classList.remove('active'));
-            
-            // Remover clase active de TODOS los indicadores en TODOS los slides
-            const allIndicators = document.querySelectorAll(`#${carouselId} .indicator-dot`);
-            allIndicators.forEach(dot => dot.classList.remove('active'));
-            
-            // Mostrar el slide e imagen actual
-            if (slides[index]) {
-                slides[index].style.display = 'block';
-                slides[index].classList.add('active');
-                
-                // Marcar el indicador correcto en el slide actual
-                const currentIndicators = slides[index].querySelectorAll('.indicator-dot');
-                if (currentIndicators[index]) {
-                    currentIndicators[index].classList.add('active');
+            slides.forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
+            images.forEach(img => { img.style.opacity = '0'; img.classList.remove('active'); });
+
+            const allDots = container.querySelectorAll('.indicator-dot');
+            allDots.forEach(dot => {
+                dot.style.background = '#ddd';
+                dot.classList.remove('active');
+                if (parseInt(dot.getAttribute('data-slide')) === index) {
+                    dot.style.background = 'var(--honda-red)';
+                    dot.classList.add('active');
                 }
-            }
-            if (images[index]) {
-                images[index].classList.add('active');
-            }
-            
+            });
+
+            if (slides[index]) { slides[index].style.display = 'block'; slides[index].classList.add('active'); }
+            if (images[index]) { images[index].style.opacity = '1'; images[index].classList.add('active'); }
             currentSlide = index;
         }
-        
-        // Botones siguiente
-        nextBtns.forEach(btn => {
+
+        // Prev / Next buttons (found inside this container)
+        container.querySelectorAll('[class*="carousel-prev"]').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                currentSlide = (currentSlide + 1) % slides.length;
-                showSlide(currentSlide);
+                showSlide((currentSlide - 1 + slides.length) % slides.length);
             });
         });
-        
-        // Botones anterior
-        prevBtns.forEach(btn => {
+        container.querySelectorAll('[class*="carousel-next"]').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                showSlide(currentSlide);
+                showSlide((currentSlide + 1) % slides.length);
             });
         });
-        
-        // Indicadores - obtener todos los indicadores de todos los slides
-        const allIndicators = document.querySelectorAll(`#${carouselId} .indicator-dot`);
-        allIndicators.forEach((dot) => {
+
+        // Indicator dots
+        container.querySelectorAll('.indicator-dot').forEach(dot => {
             dot.addEventListener('click', function(e) {
                 e.preventDefault();
-                const slideIndex = parseInt(this.getAttribute('data-slide'));
-                showSlide(slideIndex);
+                showSlide(parseInt(this.getAttribute('data-slide')));
             });
         });
-        
-        // Mostrar el primer slide
+
         showSlide(0);
     }
-    
-    // Inicializar todos los carruseles
-    initCarousel('carouselDiseno', 'carousel-prev-diseno', 'carousel-next-diseno');
-    initCarousel('carouselTecnologia', 'carousel-prev-tecnologia', 'carousel-next-tecnologia');
-    initCarousel('carouselConfort', 'carousel-prev-confort', 'carousel-next-confort');
-    initCarousel('carouselMotor', 'carousel-prev-motor', 'carousel-next-motor');
-    initCarousel('carouselSeguridad', 'carousel-prev-seguridad', 'carousel-next-seguridad');
+
+    // Auto-discover all carousel containers (any element whose id starts with "carousel")
+    document.querySelectorAll('[id^="carousel"]').forEach(function(el) {
+        if (el.querySelector('.carousel-slide-diseno')) {
+            initCarousel(el);
+        }
+    });
+
+    // ===== SISTEMA DE VERSIONES Y COLORES (dinámico) =====
+    (function() {
+        const versionTabs = document.querySelectorAll('.version-tab');
+        const versionContents = document.querySelectorAll('.version-content');
+        const versionImages = document.querySelectorAll('.version-image');
+        const colorSelectors = document.querySelectorAll('.color-selector');
+        const colorButtons = document.querySelectorAll('.color-option');
+
+        if (versionTabs.length === 0) return;
+
+        let currentVersion = versionTabs[0] ? versionTabs[0].dataset.version : null;
+        let currentColor = {};
+
+        // Init: track first color per version
+        versionTabs.forEach(tab => {
+            const ver = tab.dataset.version;
+            const firstImg = document.querySelector('.version-image[data-version="' + ver + '"]');
+            currentColor[ver] = firstImg ? firstImg.dataset.color : null;
+        });
+
+        function changeVersion(version) {
+            currentVersion = version;
+
+            versionTabs.forEach(t => t.classList.toggle('active', t.dataset.version === version));
+            versionContents.forEach(c => c.classList.toggle('active', c.dataset.version === version));
+
+            // Show/hide per-version color selectors
+            colorSelectors.forEach(cs => {
+                if (cs.dataset.version) {
+                    cs.classList.toggle('active', cs.dataset.version === version);
+                    if (cs.dataset.version === version) { cs.style.display = 'flex'; } else { cs.style.display = 'none'; }
+                }
+            });
+
+            updateImage();
+        }
+
+        function changeColor(version, color) {
+            currentColor[version] = color;
+
+            // Update active states on color buttons
+            colorButtons.forEach(btn => {
+                if (!btn.dataset.version || btn.dataset.version === version) {
+                    btn.classList.toggle('active', btn.dataset.color === color);
+                }
+            });
+
+            updateImage();
+        }
+
+        function updateImage() {
+            const targetColor = currentColor[currentVersion];
+            versionImages.forEach(img => {
+                img.classList.toggle('active',
+                    img.dataset.version === currentVersion && img.dataset.color === targetColor
+                );
+            });
+        }
+
+        versionTabs.forEach(tab => {
+            tab.addEventListener('click', () => changeVersion(tab.dataset.version));
+        });
+
+        colorButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ver = btn.dataset.version || currentVersion;
+                changeColor(ver, btn.dataset.color);
+            });
+        });
+
+        // Init display
+        if (currentVersion) changeVersion(currentVersion);
+    })();
+
+    // ===== SMOOTH SCROLL para sticky-menu =====
+    document.querySelectorAll('.sticky-menu a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                const offset = 60;
+                window.scrollTo({ top: targetEl.getBoundingClientRect().top + window.pageYOffset - offset, behavior: 'smooth' });
+            }
+        });
+    });
+
+    // ===== ACTIVE NAV HIGHLIGHT on scroll =====
+    function updateActiveNav() {
+        let current = '';
+        document.querySelectorAll('.seccion-detalle[id], .versiones-section[id]').forEach(section => {
+            const top = section.offsetTop - 100;
+            if (window.pageYOffset >= top) {
+                current = section.getAttribute('id');
+            }
+        });
+        document.querySelectorAll('.sticky-menu a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const isActive = href === '#' + current;
+                link.style.fontWeight = isActive ? '800' : '700';
+                link.style.color = (isActive && !link.classList.contains('active-ficha')) ? 'var(--honda-red)' : '#333';
+            }
+        });
+    }
+    window.addEventListener('scroll', updateActiveNav);
+
+    // ===== FORM AJAX SUBMISSIONS (Test Drive & Cotizar modals) =====
+    function setupAjaxForm(formId, modalId) {
+        const form = document.getElementById(formId);
+        const modal = document.getElementById(modalId);
+        if (!form || !modal) return;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn ? submitBtn.textContent : '';
+            if (submitBtn) { submitBtn.textContent = 'Enviando...'; submitBtn.disabled = true; }
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                body: formData,
+            })
+            .then(r => r.json())
+            .then(data => {
+                alert(data.message || '¡Solicitud enviada! Te contactaremos pronto.');
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                form.reset();
+            })
+            .catch(() => {
+                alert('Error al enviar. Por favor intentá de nuevo.');
+            })
+            .finally(() => {
+                if (submitBtn) { submitBtn.textContent = originalText; submitBtn.disabled = false; }
+            });
+        });
+    }
+
+    setupAjaxForm('formTestDrive', 'modalTestDrive');
+    setupAjaxForm('formCotizar', 'modalCotizar');
 });
