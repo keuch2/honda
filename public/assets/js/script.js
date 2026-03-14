@@ -644,223 +644,177 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Honda Website - Script cargado correctamente');
     console.log('Modelos en carrusel:', modeloCards.length);
     console.log('Hero slides:', heroSlides.length);
-});
 
-// ===== ANIMACIÓN CSS PARA WHATSAPP =====
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-`;
-document.head.appendChild(style);
-
-// ===== CARRUSELES DE MODELOS (auto-discovery dinámico) =====
-document.addEventListener('DOMContentLoaded', function() {
-
-    // Función genérica para inicializar un carrusel dentro de un contenedor
-    function initCarousel(container) {
-        const slides = container.querySelectorAll('.carousel-slide-diseno');
-        const images = container.querySelectorAll('.carousel-img-diseno');
-
-        if (slides.length === 0) return;
-
-        let currentSlide = 0;
-
-        function showSlide(index) {
-            slides.forEach(s => { s.style.display = 'none'; s.classList.remove('active'); });
-            images.forEach(img => { img.style.opacity = '0'; img.classList.remove('active'); });
-
-            const allDots = container.querySelectorAll('.indicator-dot');
-            allDots.forEach(dot => {
-                dot.style.background = '#ddd';
-                dot.classList.remove('active');
-                if (parseInt(dot.getAttribute('data-slide')) === index) {
-                    dot.style.background = 'var(--honda-red)';
-                    dot.classList.add('active');
-                }
-            });
-
-            if (slides[index]) { slides[index].style.display = 'block'; slides[index].classList.add('active'); }
-            if (images[index]) { images[index].style.opacity = '1'; images[index].classList.add('active'); }
-            currentSlide = index;
-        }
-
-        // Prev / Next buttons (found inside this container)
-        container.querySelectorAll('[class*="carousel-prev"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                showSlide((currentSlide - 1 + slides.length) % slides.length);
-            });
-        });
-        container.querySelectorAll('[class*="carousel-next"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                showSlide((currentSlide + 1) % slides.length);
-            });
-        });
-
-        // Indicator dots
-        container.querySelectorAll('.indicator-dot').forEach(dot => {
-            dot.addEventListener('click', function(e) {
-                e.preventDefault();
-                showSlide(parseInt(this.getAttribute('data-slide')));
-            });
-        });
-
-        showSlide(0);
-    }
-
-    // Auto-discover all carousel containers (any element whose id starts with "carousel")
-    document.querySelectorAll('[id^="carousel"]').forEach(function(el) {
-        if (el.querySelector('.carousel-slide-diseno')) {
-            initCarousel(el);
-        }
-    });
-
-    // ===== SISTEMA DE VERSIONES Y COLORES (dinámico) =====
+    // ===== ANIMACIÓN CSS PARA WHATSAPP =====
     (function() {
-        const versionTabs = document.querySelectorAll('.version-tab');
-        const versionContents = document.querySelectorAll('.version-content');
-        const versionImages = document.querySelectorAll('.version-image');
-        const colorSelectors = document.querySelectorAll('.color-selector');
-        const colorButtons = document.querySelectorAll('.color-option');
+        var s = document.createElement('style');
+        s.textContent = '@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}';
+        document.head.appendChild(s);
+    })();
 
-        if (versionTabs.length === 0) return;
+    // ===== CARRUSELES DE SECCIONES (auto-discovery dinámico) =====
+    (function() {
+        function initSectionCarousel(container) {
+            var slides = container.querySelectorAll('.carousel-slide-diseno');
+            var imgs   = container.querySelectorAll('.carousel-img-diseno');
+            if (slides.length === 0) return;
 
-        let currentVersion = versionTabs[0] ? versionTabs[0].dataset.version : null;
-        let currentColor = {};
+            var cur = 0;
 
-        // Init: track first color per version
-        versionTabs.forEach(tab => {
-            const ver = tab.dataset.version;
-            const firstImg = document.querySelector('.version-image[data-version="' + ver + '"]');
-            currentColor[ver] = firstImg ? firstImg.dataset.color : null;
-        });
+            function show(idx) {
+                slides.forEach(function(s){ s.style.display = 'none'; s.classList.remove('active'); });
+                imgs.forEach(function(im){ im.style.opacity = '0'; im.classList.remove('active'); });
 
-        function changeVersion(version) {
-            currentVersion = version;
+                container.querySelectorAll('.indicator-dot').forEach(function(dot){
+                    var di = parseInt(dot.getAttribute('data-slide'));
+                    dot.classList.toggle('active', di === idx);
+                    dot.style.background = di === idx ? 'var(--honda-red)' : '#ddd';
+                });
 
-            versionTabs.forEach(t => t.classList.toggle('active', t.dataset.version === version));
-            versionContents.forEach(c => c.classList.toggle('active', c.dataset.version === version));
+                if (slides[idx]) { slides[idx].style.display = 'block'; slides[idx].classList.add('active'); }
+                if (imgs[idx])   { imgs[idx].style.opacity = '1'; imgs[idx].classList.add('active'); }
+                cur = idx;
+            }
 
-            // Show/hide per-version color selectors
-            colorSelectors.forEach(cs => {
-                if (cs.dataset.version) {
-                    cs.classList.toggle('active', cs.dataset.version === version);
-                    if (cs.dataset.version === version) { cs.style.display = 'flex'; } else { cs.style.display = 'none'; }
-                }
+            container.querySelectorAll('[class*="carousel-prev"]').forEach(function(btn){
+                btn.addEventListener('click', function(e){ e.preventDefault(); show((cur - 1 + slides.length) % slides.length); });
+            });
+            container.querySelectorAll('[class*="carousel-next"]').forEach(function(btn){
+                btn.addEventListener('click', function(e){ e.preventDefault(); show((cur + 1) % slides.length); });
+            });
+            container.querySelectorAll('.indicator-dot').forEach(function(dot){
+                dot.addEventListener('click', function(e){ e.preventDefault(); show(parseInt(this.getAttribute('data-slide'))); });
             });
 
-            updateImage();
+            show(0);
+            console.log('[Honda] Carousel initialized:', container.id, 'slides:', slides.length);
         }
 
-        function changeColor(version, color) {
-            currentColor[version] = color;
+        var carousels = document.querySelectorAll('[id^="carousel"]');
+        console.log('[Honda] Found', carousels.length, 'potential carousels');
+        carousels.forEach(function(el){
+            if (el.querySelector('.carousel-slide-diseno')) {
+                initSectionCarousel(el);
+            }
+        });
+    })();
 
-            // Update active states on color buttons
-            colorButtons.forEach(btn => {
-                if (!btn.dataset.version || btn.dataset.version === version) {
+    // ===== SISTEMA DE VERSIONES Y COLORES =====
+    (function() {
+        var vTabs     = document.querySelectorAll('.version-tab');
+        var vContents = document.querySelectorAll('.version-content');
+        var vImages   = document.querySelectorAll('.version-image');
+        var cSelectors= document.querySelectorAll('.color-selector');
+        var cButtons  = document.querySelectorAll('.color-option');
+
+        if (vTabs.length === 0) return;
+        console.log('[Honda] Version tabs found:', vTabs.length, 'Color buttons:', cButtons.length);
+
+        var curVer = vTabs[0].dataset.version;
+        var curCol = {};
+
+        vTabs.forEach(function(tab){
+            var ver = tab.dataset.version;
+            var firstImg = document.querySelector('.version-image[data-version="' + ver + '"]');
+            curCol[ver] = firstImg ? firstImg.dataset.color : null;
+        });
+
+        function setVersion(ver) {
+            curVer = ver;
+            vTabs.forEach(function(t){ t.classList.toggle('active', t.dataset.version === ver); });
+            vContents.forEach(function(c){ c.classList.toggle('active', c.dataset.version === ver); });
+            cSelectors.forEach(function(cs){
+                if (cs.dataset.version) {
+                    cs.style.display = cs.dataset.version === ver ? 'flex' : 'none';
+                }
+            });
+            setColor(ver, curCol[ver]);
+        }
+
+        function setColor(ver, color) {
+            curCol[ver] = color;
+            cButtons.forEach(function(btn){
+                if (!btn.dataset.version || btn.dataset.version === ver) {
                     btn.classList.toggle('active', btn.dataset.color === color);
                 }
             });
-
-            updateImage();
-        }
-
-        function updateImage() {
-            const targetColor = currentColor[currentVersion];
-            versionImages.forEach(img => {
+            vImages.forEach(function(img){
                 img.classList.toggle('active',
-                    img.dataset.version === currentVersion && img.dataset.color === targetColor
+                    img.dataset.version === curVer && img.dataset.color === curCol[curVer]
                 );
             });
         }
 
-        versionTabs.forEach(tab => {
-            tab.addEventListener('click', () => changeVersion(tab.dataset.version));
+        vTabs.forEach(function(tab){
+            tab.addEventListener('click', function(){ setVersion(tab.dataset.version); });
+        });
+        cButtons.forEach(function(btn){
+            btn.addEventListener('click', function(){ setColor(btn.dataset.version || curVer, btn.dataset.color); });
         });
 
-        colorButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const ver = btn.dataset.version || currentVersion;
-                changeColor(ver, btn.dataset.color);
-            });
-        });
-
-        // Init display
-        if (currentVersion) changeVersion(currentVersion);
+        setVersion(curVer);
     })();
 
     // ===== SMOOTH SCROLL para sticky-menu =====
-    document.querySelectorAll('.sticky-menu a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+    document.querySelectorAll('.sticky-menu a[href^="#"]').forEach(function(anchor){
+        anchor.addEventListener('click', function(e){
             e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetEl = document.getElementById(targetId);
+            var targetEl = document.getElementById(this.getAttribute('href').substring(1));
             if (targetEl) {
-                const offset = 60;
-                window.scrollTo({ top: targetEl.getBoundingClientRect().top + window.pageYOffset - offset, behavior: 'smooth' });
+                window.scrollTo({ top: targetEl.getBoundingClientRect().top + window.pageYOffset - 60, behavior: 'smooth' });
             }
         });
     });
 
     // ===== ACTIVE NAV HIGHLIGHT on scroll =====
-    function updateActiveNav() {
-        let current = '';
-        document.querySelectorAll('.seccion-detalle[id], .versiones-section[id]').forEach(section => {
-            const top = section.offsetTop - 100;
-            if (window.pageYOffset >= top) {
-                current = section.getAttribute('id');
-            }
+    window.addEventListener('scroll', function(){
+        var current = '';
+        document.querySelectorAll('.seccion-detalle[id], .versiones-section[id]').forEach(function(sec){
+            if (window.pageYOffset >= sec.offsetTop - 100) current = sec.getAttribute('id');
         });
-        document.querySelectorAll('.sticky-menu a').forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                const isActive = href === '#' + current;
+        document.querySelectorAll('.sticky-menu a').forEach(function(link){
+            var href = link.getAttribute('href');
+            if (href && href.charAt(0) === '#') {
+                var isActive = href === '#' + current;
                 link.style.fontWeight = isActive ? '800' : '700';
                 link.style.color = (isActive && !link.classList.contains('active-ficha')) ? 'var(--honda-red)' : '#333';
             }
         });
-    }
-    window.addEventListener('scroll', updateActiveNav);
+    });
 
     // ===== FORM AJAX SUBMISSIONS (Test Drive & Cotizar modals) =====
-    function setupAjaxForm(formId, modalId) {
-        const form = document.getElementById(formId);
-        const modal = document.getElementById(modalId);
+    ['formTestDrive', 'formCotizar'].forEach(function(formId){
+        var form = document.getElementById(formId);
+        var modal = form ? form.closest('.modal') : null;
         if (!form || !modal) return;
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function(e){
             e.preventDefault();
-            const formData = new FormData(form);
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn ? submitBtn.textContent : '';
-            if (submitBtn) { submitBtn.textContent = 'Enviando...'; submitBtn.disabled = true; }
+            var btn = form.querySelector('button[type="submit"]');
+            var origText = btn ? btn.textContent : '';
+            if (btn) { btn.textContent = 'Enviando...'; btn.disabled = true; }
 
             fetch(form.action, {
                 method: 'POST',
                 headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
-                body: formData,
+                body: new FormData(form),
             })
-            .then(r => r.json())
-            .then(data => {
-                alert(data.message || '¡Solicitud enviada! Te contactaremos pronto.');
+            .then(function(r){ return r.json(); })
+            .then(function(data){
+                // Fire Google Ads conversion if on landing page
+                if (window._landingConversionLabel && window._landingGoogleAdsId && typeof gtag === 'function') {
+                    gtag('event', 'conversion', {
+                        'send_to': window._landingGoogleAdsId + '/' + window._landingConversionLabel
+                    });
+                }
+                alert(data.message || '¡Solicitud enviada!');
                 modal.classList.remove('active');
                 document.body.style.overflow = 'auto';
                 form.reset();
             })
-            .catch(() => {
-                alert('Error al enviar. Por favor intentá de nuevo.');
-            })
-            .finally(() => {
-                if (submitBtn) { submitBtn.textContent = originalText; submitBtn.disabled = false; }
-            });
+            .catch(function(){ alert('Error al enviar. Intentá de nuevo.'); })
+            .finally(function(){ if (btn) { btn.textContent = origText; btn.disabled = false; } });
         });
-    }
+    });
 
-    setupAjaxForm('formTestDrive', 'modalTestDrive');
-    setupAjaxForm('formCotizar', 'modalCotizar');
 });

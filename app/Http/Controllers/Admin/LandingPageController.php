@@ -25,21 +25,20 @@ class LandingPageController extends Controller
     public function update(Request $request, LandingPage $landingPage): RedirectResponse
     {
         $data = $request->validate([
-            'titulo' => 'nullable|string|max:255',
-            'subtitulo' => 'nullable|string|max:255',
-            'hero_css_class' => 'nullable|string|max:100',
-            'form_titulo' => 'nullable|string|max:255',
-            'form_subtitulo' => 'nullable|string|max:500',
-            'custom_content' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-            'meta_keywords' => 'nullable|string|max:500',
+            'google_ads_id' => 'nullable|string|max:100',
+            'google_ads_conversion_label' => 'nullable|string|max:100',
+            'meta_pixel_id' => 'nullable|string|max:100',
+            'custom_head_scripts' => 'nullable|string|max:5000',
             'is_active' => 'nullable',
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);
 
-        if ($request->hasFile('hero_image')) {
+        if ($request->boolean('remove_hero_image')) {
+            $data['hero_image'] = null;
+        } elseif ($request->hasFile('hero_image')) {
             $data['hero_image'] = $request->file('hero_image')->store('landing-pages', 'public');
         }
 

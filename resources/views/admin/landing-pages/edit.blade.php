@@ -31,47 +31,48 @@
                 @csrf
                 @method('PUT')
                 <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="titulo" class="block text-sm font-medium text-gray-700">Título</label>
-                            <input type="text" name="titulo" id="titulo" value="{{ old('titulo', $landingPage->titulo) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="subtitulo" class="block text-sm font-medium text-gray-700">Subtítulo</label>
-                            <input type="text" name="subtitulo" id="subtitulo" value="{{ old('subtitulo', $landingPage->subtitulo) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                        <p class="text-sm text-blue-700">Esta landing hereda todo el contenido del modelo <strong>{{ $landingPage->modelo?->displayName() }}</strong>. Solo podés personalizar la imagen hero, los tags de seguimiento y el SEO.</p>
                     </div>
 
-                    <div>
-                        <label for="hero_css_class" class="block text-sm font-medium text-gray-700">Clase CSS del Hero</label>
-                        <input type="text" name="hero_css_class" id="hero_css_class" value="{{ old('hero_css_class', $landingPage->hero_css_class) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    </div>
-
+                    <h3 class="text-lg font-medium text-gray-900">Imagen Hero</h3>
                     <div>
                         <label for="hero_image" class="block text-sm font-medium text-gray-700">Imagen Hero (opcional, usa la del modelo si está vacía)</label>
                         @if($landingPage->hero_image)
-                            <p class="text-xs text-gray-500 mt-1">Actual: {{ basename($landingPage->hero_image) }}</p>
+                            <div class="flex items-center gap-4 mt-1">
+                                <p class="text-xs text-gray-500">Actual: {{ basename($landingPage->hero_image) }}</p>
+                                <label class="inline-flex items-center text-xs text-red-600 cursor-pointer">
+                                    <input type="checkbox" name="remove_hero_image" value="1" class="mr-1"> Eliminar
+                                </label>
+                            </div>
                         @endif
                         <input type="file" name="hero_image" id="hero_image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700">
                     </div>
 
                     <hr class="border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900">Formulario</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Tracking &amp; Conversiones</h3>
+                    <p class="text-xs text-gray-500 -mt-4">Si se completan, estos tags reemplazan los globales solo en esta landing page.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="form_titulo" class="block text-sm font-medium text-gray-700">Título del Formulario</label>
-                            <input type="text" name="form_titulo" id="form_titulo" value="{{ old('form_titulo', $landingPage->form_titulo) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <label for="google_ads_id" class="block text-sm font-medium text-gray-700">Google Ads ID</label>
+                            <input type="text" name="google_ads_id" id="google_ads_id" value="{{ old('google_ads_id', $landingPage->google_ads_id) }}" placeholder="AW-XXXXXXXXXX" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         </div>
                         <div>
-                            <label for="form_subtitulo" class="block text-sm font-medium text-gray-700">Subtítulo del Formulario</label>
-                            <input type="text" name="form_subtitulo" id="form_subtitulo" value="{{ old('form_subtitulo', $landingPage->form_subtitulo) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <label for="google_ads_conversion_label" class="block text-sm font-medium text-gray-700">Google Ads Conversion Label</label>
+                            <input type="text" name="google_ads_conversion_label" id="google_ads_conversion_label" value="{{ old('google_ads_conversion_label', $landingPage->google_ads_conversion_label) }}" placeholder="AbCdEfGhIjK" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         </div>
                     </div>
 
                     <div>
-                        <label for="custom_content" class="block text-sm font-medium text-gray-700">Contenido personalizado (HTML opcional)</label>
-                        <textarea name="custom_content" id="custom_content" rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono text-xs">{{ old('custom_content', $landingPage->custom_content) }}</textarea>
+                        <label for="meta_pixel_id" class="block text-sm font-medium text-gray-700">Meta (Facebook) Pixel ID</label>
+                        <input type="text" name="meta_pixel_id" id="meta_pixel_id" value="{{ old('meta_pixel_id', $landingPage->meta_pixel_id) }}" placeholder="123456789012345" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="custom_head_scripts" class="block text-sm font-medium text-gray-700">Scripts personalizados (se insertan en &lt;head&gt;)</label>
+                        <textarea name="custom_head_scripts" id="custom_head_scripts" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm font-mono text-xs" placeholder="<!-- Google Tag Manager, conversion scripts, etc. -->">{{ old('custom_head_scripts', $landingPage->custom_head_scripts) }}</textarea>
                     </div>
 
                     <hr class="border-gray-200">

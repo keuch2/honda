@@ -19,6 +19,16 @@
         $gtmId = $tracking['gtm_id'] ?? 'GTM-PZCC46V8';
         $metaPixelId = $tracking['meta_pixel_id'] ?? '173327190136806';
         $twitterPixelId = $tracking['twitter_pixel_id'] ?? 'p4avp';
+
+        // Landing page tracking overrides
+        if (isset($isLanding) && $isLanding && isset($landingPage)) {
+            if ($landingPage->google_ads_id) {
+                $googleAdsId = $landingPage->google_ads_id;
+            }
+            if ($landingPage->meta_pixel_id) {
+                $metaPixelId = $landingPage->meta_pixel_id;
+            }
+        }
     @endphp
 
     @if($googleAdsId)
@@ -91,6 +101,18 @@
     {!! $tracking['custom_head_scripts'] !!}
     @endif
 
+    @if(isset($isLanding) && $isLanding && isset($landingPage))
+        @if($landingPage->google_ads_conversion_label)
+        <script>
+            window._landingConversionLabel = '{{ $landingPage->google_ads_conversion_label }}';
+            window._landingGoogleAdsId = '{{ $landingPage->google_ads_id ?? $googleAdsId }}';
+        </script>
+        @endif
+        @if($landingPage->custom_head_scripts)
+        {!! $landingPage->custom_head_scripts !!}
+        @endif
+    @endif
+
     @stack('styles')
 </head>
 <body class="font-sans antialiased">
@@ -105,7 +127,7 @@
 
     @stack('modals')
 
-    <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}?v={{ filemtime(public_path('assets/js/script.js')) }}"></script>
     @stack('scripts')
 </body>
 </html>

@@ -24,6 +24,10 @@ class LandingPage extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'google_ads_id',
+        'google_ads_conversion_label',
+        'meta_pixel_id',
+        'custom_head_scripts',
         'is_active',
     ];
 
