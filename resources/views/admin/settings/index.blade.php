@@ -138,13 +138,18 @@
                     </form>
                 </div>
 
+                @php
+                    $defaultTestdrive = '[{"name":"nombre","label":"Nombre Completo","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"ciudad","label":"Ciudad","type":"text","required":true},{"name":"modelo","label":"Modelo","type":"select","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
+                    $defaultCotizar = '[{"name":"nombre","label":"Nombre Completo","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"ciudad","label":"Ciudad","type":"text","required":true},{"name":"modelo","label":"Modelo","type":"select","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
+                    $defaultLanding = '[{"name":"nombre","label":"Nombre Completo","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
+
+                    $formTestdrive = $s('form_testdrive_fields', $defaultTestdrive);
+                    $formCotizar = $s('form_cotizar_fields', $defaultCotizar);
+                    $formLanding = $s('form_landing_fields', $defaultLanding);
+                @endphp
+
                 <!-- Formularios -->
-                <div x-show="tab === 'forms'"
-                     x-data="formFieldsManager({
-                        testdrive: {{ $s('form_testdrive_fields', '[{&quot;name&quot;:&quot;nombre&quot;,&quot;label&quot;:&quot;Nombre Completo&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;telefono&quot;,&quot;label&quot;:&quot;Teléfono&quot;,&quot;type&quot;:&quot;tel&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;email&quot;,&quot;label&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;email&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;ciudad&quot;,&quot;label&quot;:&quot;Ciudad&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;modelo&quot;,&quot;label&quot;:&quot;Modelo&quot;,&quot;type&quot;:&quot;select&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;comentarios&quot;,&quot;label&quot;:&quot;Comentarios&quot;,&quot;type&quot;:&quot;textarea&quot;,&quot;required&quot;:false}]') }},
-                        cotizar: {{ $s('form_cotizar_fields', '[{&quot;name&quot;:&quot;nombre&quot;,&quot;label&quot;:&quot;Nombre Completo&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;telefono&quot;,&quot;label&quot;:&quot;Teléfono&quot;,&quot;type&quot;:&quot;tel&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;email&quot;,&quot;label&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;email&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;ciudad&quot;,&quot;label&quot;:&quot;Ciudad&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;modelo&quot;,&quot;label&quot;:&quot;Modelo&quot;,&quot;type&quot;:&quot;select&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;comentarios&quot;,&quot;label&quot;:&quot;Comentarios&quot;,&quot;type&quot;:&quot;textarea&quot;,&quot;required&quot;:false}]') }},
-                        landing: {{ $s('form_landing_fields', '[{&quot;name&quot;:&quot;nombre&quot;,&quot;label&quot;:&quot;Nombre Completo&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;telefono&quot;,&quot;label&quot;:&quot;Teléfono&quot;,&quot;type&quot;:&quot;tel&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;email&quot;,&quot;label&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;email&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;comentarios&quot;,&quot;label&quot;:&quot;Comentarios&quot;,&quot;type&quot;:&quot;textarea&quot;,&quot;required&quot;:false}]') }}
-                     })">
+                <div x-show="tab === 'forms'" x-data="formFieldsManager()" x-init="initData(window.__formFieldsData)">
                     <form action="{{ route('admin.settings.forms') }}" method="POST" @submit="serializeAll()">
                         @csrf
                         <input type="hidden" name="form_testdrive_fields" :value="serialized.testdrive">
@@ -249,19 +254,27 @@
 
 @push('scripts')
 <script>
+    window.__formFieldsData = {
+        testdrive: {!! $formTestdrive !!},
+        cotizar: {!! $formCotizar !!},
+        landing: {!! $formLanding !!}
+    };
+</script>
+<script>
 document.addEventListener('alpine:init', () => {
-    Alpine.data('formFieldsManager', (initial) => ({
-        forms: {
-            testdrive: JSON.parse(JSON.stringify(initial.testdrive || [])),
-            cotizar: JSON.parse(JSON.stringify(initial.cotizar || [])),
-            landing: JSON.parse(JSON.stringify(initial.landing || [])),
-        },
+    Alpine.data('formFieldsManager', () => ({
+        forms: { testdrive: [], cotizar: [], landing: [] },
         serialized: { testdrive: '', cotizar: '', landing: '' },
         sections: [
             { key: 'testdrive', title: 'Formulario Test Drive' },
             { key: 'cotizar', title: 'Formulario Cotizar' },
             { key: 'landing', title: 'Formulario Landing Pages' },
         ],
+        initData(data) {
+            this.forms.testdrive = JSON.parse(JSON.stringify(data.testdrive || []));
+            this.forms.cotizar = JSON.parse(JSON.stringify(data.cotizar || []));
+            this.forms.landing = JSON.parse(JSON.stringify(data.landing || []));
+        },
         addField(key) {
             this.forms[key].push({ name: '', label: '', type: 'text', required: false });
         },
