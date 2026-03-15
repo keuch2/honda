@@ -1,6 +1,9 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
+    # Servir archivos de storage/app/public sin symlink
+    RewriteRule ^storage/(.*)$ storage/app/public/$1 [L]
+    
     # Evitar loops de redirección
     RewriteCond %{ENV:REDIRECT_STATUS} ^$
     
