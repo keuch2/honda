@@ -89,53 +89,40 @@
         <h2 class="modal-title">Solicitar Test Drive</h2>
         <form id="formTestDrive" class="modal-form" method="POST" action="{{ route('testdrive.submit') }}">
             @csrf
-            <div class="form-group">
-                <label for="td-nombre">Nombre Completo *</label>
-                <input type="text" id="td-nombre" name="nombre" required>
-            </div>
-            <div class="form-group">
-                <label for="td-telefono">Teléfono *</label>
-                <input type="tel" id="td-telefono" name="telefono" required>
-            </div>
-            <div class="form-group">
-                <label for="td-email">Email *</label>
-                <input type="email" id="td-email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="td-ciudad">Ciudad *</label>
-                <input type="text" id="td-ciudad" name="ciudad" required>
-            </div>
-            @if(isset($currentModelo))
-                <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
-                @if(isset($isLanding) && $isLanding && isset($landingPage))
-                    <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
-                @endif
-                <div class="form-group">
-                    <label>Modelo</label>
-                    <input type="text" value="{{ $currentModelo->nombre }}" disabled style="background: #f0f0f0;">
-                </div>
-            @else
-                <div class="form-group">
-                    <label for="td-modelo">Modelo *</label>
-                    <select id="td-modelo" name="modelo" required>
-                        <option value="">Seleccione un modelo</option>
-                        @if(isset($activeModelos))
-                            @foreach($activeModelos as $m)
-                                <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
-                            @endforeach
-                        @else
-                            <option value="CR-V">CR-V</option>
-                            <option value="CR-V e:HEV">CR-V e:HEV</option>
-                            <option value="HR-V">HR-V</option>
-                            <option value="Pilot">Pilot</option>
-                        @endif
-                    </select>
-                </div>
+            @if(isset($isLanding) && $isLanding && isset($landingPage))
+                <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
             @endif
-            <div class="form-group">
-                <label for="td-comentarios">Comentarios</label>
-                <textarea id="td-comentarios" name="comentarios" rows="4"></textarea>
-            </div>
+            @foreach($formTestdriveFields ?? [] as $field)
+                @if($field['type'] === 'select' && $field['name'] === 'modelo')
+                    @if(isset($currentModelo))
+                        <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
+                        <div class="form-group">
+                            <label>{{ $field['label'] }}</label>
+                            <input type="text" value="{{ $currentModelo->nombre }}" disabled style="background: #f0f0f0;">
+                        </div>
+                    @else
+                        <div class="form-group">
+                            <label for="td-{{ $field['name'] }}">{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
+                            <select id="td-{{ $field['name'] }}" name="{{ $field['name'] }}" {{ !empty($field['required']) ? 'required' : '' }}>
+                                <option value="">Seleccione un modelo</option>
+                                @foreach($activeModelos ?? [] as $m)
+                                    <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                @elseif($field['type'] === 'textarea')
+                    <div class="form-group">
+                        <label for="td-{{ $field['name'] }}">{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
+                        <textarea id="td-{{ $field['name'] }}" name="{{ $field['name'] }}" rows="4" {{ !empty($field['required']) ? 'required' : '' }}></textarea>
+                    </div>
+                @else
+                    <div class="form-group">
+                        <label for="td-{{ $field['name'] }}">{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
+                        <input type="{{ $field['type'] }}" id="td-{{ $field['name'] }}" name="{{ $field['name'] }}" {{ !empty($field['required']) ? 'required' : '' }}>
+                    </div>
+                @endif
+            @endforeach
             <button type="submit" class="btn btn-red btn-block">Enviar Solicitud</button>
         </form>
     </div>
@@ -147,53 +134,40 @@
         <h2 class="modal-title">Solicitar Cotización</h2>
         <form id="formCotizar" class="modal-form" method="POST" action="{{ route('cotizar.submit') }}">
             @csrf
-            <div class="form-group">
-                <label for="cot-nombre">Nombre Completo *</label>
-                <input type="text" id="cot-nombre" name="nombre" required>
-            </div>
-            <div class="form-group">
-                <label for="cot-telefono">Teléfono *</label>
-                <input type="tel" id="cot-telefono" name="telefono" required>
-            </div>
-            <div class="form-group">
-                <label for="cot-email">Email *</label>
-                <input type="email" id="cot-email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="cot-ciudad">Ciudad *</label>
-                <input type="text" id="cot-ciudad" name="ciudad" required>
-            </div>
-            @if(isset($currentModelo))
-                <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
-                @if(isset($isLanding) && $isLanding && isset($landingPage))
-                    <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
-                @endif
-                <div class="form-group">
-                    <label>Modelo</label>
-                    <input type="text" value="{{ $currentModelo->nombre }}" disabled style="background: #f0f0f0;">
-                </div>
-            @else
-                <div class="form-group">
-                    <label for="cot-modelo">Modelo *</label>
-                    <select id="cot-modelo" name="modelo" required>
-                        <option value="">Seleccione un modelo</option>
-                        @if(isset($activeModelos))
-                            @foreach($activeModelos as $m)
-                                <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
-                            @endforeach
-                        @else
-                            <option value="CR-V">CR-V</option>
-                            <option value="CR-V e:HEV">CR-V e:HEV</option>
-                            <option value="HR-V">HR-V</option>
-                            <option value="Pilot">Pilot</option>
-                        @endif
-                    </select>
-                </div>
+            @if(isset($isLanding) && $isLanding && isset($landingPage))
+                <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
             @endif
-            <div class="form-group">
-                <label for="cot-comentarios">Comentarios</label>
-                <textarea id="cot-comentarios" name="comentarios" rows="4"></textarea>
-            </div>
+            @foreach($formCotizarFields ?? [] as $field)
+                @if($field['type'] === 'select' && $field['name'] === 'modelo')
+                    @if(isset($currentModelo))
+                        <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
+                        <div class="form-group">
+                            <label>{{ $field['label'] }}</label>
+                            <input type="text" value="{{ $currentModelo->nombre }}" disabled style="background: #f0f0f0;">
+                        </div>
+                    @else
+                        <div class="form-group">
+                            <label for="cot-{{ $field['name'] }}">{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
+                            <select id="cot-{{ $field['name'] }}" name="{{ $field['name'] }}" {{ !empty($field['required']) ? 'required' : '' }}>
+                                <option value="">Seleccione un modelo</option>
+                                @foreach($activeModelos ?? [] as $m)
+                                    <option value="{{ $m->nombre }}">{{ $m->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                @elseif($field['type'] === 'textarea')
+                    <div class="form-group">
+                        <label for="cot-{{ $field['name'] }}">{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
+                        <textarea id="cot-{{ $field['name'] }}" name="{{ $field['name'] }}" rows="4" {{ !empty($field['required']) ? 'required' : '' }}></textarea>
+                    </div>
+                @else
+                    <div class="form-group">
+                        <label for="cot-{{ $field['name'] }}">{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
+                        <input type="{{ $field['type'] }}" id="cot-{{ $field['name'] }}" name="{{ $field['name'] }}" {{ !empty($field['required']) ? 'required' : '' }}>
+                    </div>
+                @endif
+            @endforeach
             <button type="submit" class="btn btn-red btn-block">Enviar Solicitud</button>
         </form>
     </div>

@@ -38,7 +38,12 @@ class AppServiceProvider extends ServiceProvider
 
             $tracking = SiteSetting::getGroup('tracking');
 
-            $view->with(compact('activeModelos', 'whatsappNumber', 'whatsappMessage', 'tracking'));
+            $defaultFields = '[{"name":"nombre","label":"Nombre Completo","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"ciudad","label":"Ciudad","type":"text","required":true},{"name":"modelo","label":"Modelo","type":"select","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
+            $formTestdriveFields = json_decode(SiteSetting::get('form_testdrive_fields', $defaultFields), true) ?: [];
+            $formCotizarFields = json_decode(SiteSetting::get('form_cotizar_fields', $defaultFields), true) ?: [];
+            $formLandingFields = json_decode(SiteSetting::get('form_landing_fields', $defaultFields), true) ?: [];
+
+            $view->with(compact('activeModelos', 'whatsappNumber', 'whatsappMessage', 'tracking', 'formTestdriveFields', 'formCotizarFields', 'formLandingFields'));
         });
     }
 }
