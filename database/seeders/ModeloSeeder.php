@@ -273,37 +273,37 @@ class ModeloSeeder extends Seeder
         $this->addSeccion($modelo, 'Diseño', 'diseno',
             'Presencia imponente, líneas refinadas y una calidad que se percibe en cada detalle.',
             'text-left', 0, [
-                ['titulo' => 'Faros Full-LED con DRL', 'descripcion' => 'Iluminación adaptativa que garantiza máxima visibilidad y un diseño frontal inconfundible.', 'imagen' => 'assets/images/fotos/CR-V/diseno-1.jpg'],
-                ['titulo' => 'Interior premium con materiales de alta calidad', 'descripcion' => 'Habitáculo diseñado con materiales nobles y acabados que elevan la experiencia a bordo.', 'imagen' => 'assets/images/fotos/CR-V/diseno-2.jpg'],
-                ['titulo' => 'Llantas de aleación de 19"', 'descripcion' => 'Diseño exclusivo que combina presencia deportiva con el máximo rendimiento.', 'imagen' => 'assets/images/fotos/CR-V/diseno-3.jpg'],
+                ['titulo' => 'Faros Full-LED con DRL', 'descripcion' => 'Iluminación adaptativa que garantiza máxima visibilidad y un diseño frontal inconfundible.', 'imagen' => 'assets/images/fotos/CRV/faros_delanteros_y_traseros_led.jpg'],
+                ['titulo' => 'Interior premium con materiales de alta calidad', 'descripcion' => 'Habitáculo diseñado con materiales nobles y acabados que elevan la experiencia a bordo.', 'imagen' => 'assets/images/fotos/CRV/crv-03.jpg'],
+                ['titulo' => 'Llantas de aleación de 18"', 'descripcion' => 'Diseño exclusivo que combina presencia deportiva con el máximo rendimiento.', 'imagen' => 'assets/images/fotos/CRV/llantas_de_aleacion_de_18.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Tecnología', 'tecnologia',
             'Conectividad avanzada y tecnología de punta para una experiencia de conducción superior.',
             'text-right', 1, [
-                ['titulo' => 'Pantalla táctil de 9"', 'descripcion' => 'Con Apple CarPlay y Android Auto inalámbrico para una conectividad perfecta.', 'imagen' => 'assets/images/fotos/CR-V/tecnologia-1.jpg'],
-                ['titulo' => 'Panel digital de 10.2"', 'descripcion' => 'Toda la información del vehículo de manera clara y personalizable.', 'imagen' => 'assets/images/fotos/CR-V/tecnologia-2.jpg'],
-                ['titulo' => 'Sistema de audio premium BOSE', 'descripcion' => 'Sonido envolvente de alta fidelidad con 12 altavoces estratégicamente ubicados.', 'imagen' => 'assets/images/fotos/CR-V/tecnologia-3.jpg'],
+                ['titulo' => 'Pantalla táctil de 9" + Apple CarPlay y Android Auto', 'descripcion' => 'Conectividad perfecta con tu smartphone de forma inalámbrica.', 'imagen' => 'assets/images/fotos/CRV/pantalla_tactil_9_+_apple_carplay__android_auto.jpg'],
+                ['titulo' => 'Panel digital de 7"', 'descripcion' => 'Toda la información del vehículo de manera clara y personalizable.', 'imagen' => 'assets/images/fotos/CRV/panel_digital_de_7.jpg'],
+                ['titulo' => 'Encendido remoto del motor', 'descripcion' => 'Climatizá tu vehículo antes de subir, desde la comodidad de tu hogar.', 'imagen' => 'assets/images/fotos/CRV/encendido_remoto_del_motor.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Motor', 'motor',
             'Potencia y eficiencia en perfecta armonía para cada tipo de recorrido.',
             'text-left', 2, [
-                ['titulo' => 'Motor 1.5L VTEC Turbo', 'descripcion' => '190 hp de potencia con tecnología turbo para una respuesta inmediata.', 'imagen' => 'assets/images/fotos/CR-V/motor-1.jpg'],
-                ['titulo' => 'Transmisión CVT inteligente', 'descripcion' => 'Cambios suaves y eficientes que optimizan el rendimiento en cada situación.', 'imagen' => 'assets/images/fotos/CR-V/motor-2.jpg'],
-                ['titulo' => 'Tracción AWD Real Time', 'descripcion' => 'Sistema inteligente que distribuye la tracción según las condiciones del camino.', 'imagen' => 'assets/images/fotos/CR-V/motor-3.jpg'],
+                ['titulo' => 'Motor 1.5L Turbo 188 HP', 'descripcion' => '188 hp de potencia con tecnología turbo para una respuesta inmediata.', 'imagen' => 'assets/images/fotos/CRV/motor_1.5l_turbo_188_hp.jpg'],
+                ['titulo' => 'Transmisión CVT inteligente', 'descripcion' => 'Cambios suaves y eficientes que optimizan el rendimiento en cada situación.', 'imagen' => 'assets/images/fotos/CRV/transmision_cvt.jpg'],
+                ['titulo' => 'HSA + HDC', 'descripcion' => 'Asistencia en pendientes ascendentes y descendentes para mayor control y seguridad.', 'imagen' => 'assets/images/fotos/CRV/hsa_-_hdc.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Seguridad', 'seguridad',
             'Protección integral con los sistemas de seguridad más avanzados de Honda.',
             'text-right', 3, [
-                ['titulo' => 'Honda Sensing de última generación', 'descripcion' => 'Suite completa de asistencia: ACC, CMBS, LKAS, RDM, LDW y Auto High Beam.', 'imagen' => 'assets/images/fotos/CR-V/seguridad-1.jpg'],
-                ['titulo' => '8 airbags + estructura ACE', 'descripcion' => 'Máxima protección con airbags frontales, laterales, de cortina y de rodilla.', 'imagen' => 'assets/images/fotos/CR-V/seguridad-2.jpg'],
-                ['titulo' => 'Cámara multivista 360°', 'descripcion' => 'Visión completa del entorno para maniobras seguras en todo momento.', 'imagen' => 'assets/images/fotos/CR-V/seguridad-3.jpg'],
+                ['titulo' => 'Frenado de mitigación de colisión', 'descripcion' => 'El sistema detecta peatones y vehículos, alertando y frenando automáticamente si es necesario.', 'imagen' => 'assets/images/fotos/CRV/frenado_mitigado.jpg'],
+                ['titulo' => '8 airbags + estructura ACE', 'descripcion' => 'Máxima protección con airbags frontales, laterales, de cortina y de rodilla.', 'imagen' => 'assets/images/fotos/CRV/estructura_ace_+_8_airbags.jpg'],
+                ['titulo' => 'Cámara multivista + sensores', 'descripcion' => 'Visión completa del entorno para maniobras seguras en todo momento.', 'imagen' => 'assets/images/fotos/CRV/sensores_delanteros_y_traseros_+_camara_multivista.jpg'],
             ]);
 
-        $this->addVersion($modelo, 'EXL', 0, [
-            'Motor 1.5L VTEC Turbo (190 hp)',
+        $this->addVersion($modelo, 'EX', 0, [
+            'Motor 1.5L Turbo (188 hp)',
             'Transmisión CVT',
             'Honda Sensing',
             '8 Airbags',
@@ -311,27 +311,7 @@ class ModeloSeeder extends Seeder
             'Llantas de aleación 18"',
             'Cámara multivista',
         ], [
-            ['nombre' => 'Blanco', 'hex_code' => '#FFFFFF', 'imagen' => 'assets/images/fotos/CR-V/versiones/EXL/CRV-EXL-Blanco.jpg'],
-            ['nombre' => 'Negro', 'hex_code' => '#1A1A1A', 'imagen' => 'assets/images/fotos/CR-V/versiones/EXL/CRV-EXL-Negro.jpg'],
-            ['nombre' => 'Gris', 'hex_code' => '#8C8C8C', 'imagen' => 'assets/images/fotos/CR-V/versiones/EXL/CRV-EXL-Gris.jpg'],
-        ]);
-
-        $this->addVersion($modelo, 'TOURING', 1, [
-            'Motor 1.5L VTEC Turbo (190 hp)',
-            'Transmisión CVT',
-            'Tracción AWD Real Time',
-            'Honda Sensing',
-            '8 Airbags',
-            'Pantalla 9" Apple CarPlay y Android Auto',
-            'Sistema BOSE 12 altavoces',
-            'Llantas de aleación 19"',
-            'Asientos en cuero con calefacción',
-            'Techo panorámico eléctrico',
-            'Cámara multivista 360°',
-        ], [
-            ['nombre' => 'Blanco', 'hex_code' => '#FFFFFF', 'imagen' => 'assets/images/fotos/CR-V/versiones/Touring/CRV-Touring-Blanco.jpg'],
-            ['nombre' => 'Negro', 'hex_code' => '#1A1A1A', 'imagen' => 'assets/images/fotos/CR-V/versiones/Touring/CRV-Touring-Negro.jpg'],
-            ['nombre' => 'Gris', 'hex_code' => '#8C8C8C', 'imagen' => 'assets/images/fotos/CR-V/versiones/Touring/CRV-Touring-Gris.jpg'],
+            ['nombre' => 'Plata', 'hex_code' => '#C0C0C0', 'imagen' => 'assets/images/fotos/CRV/versiones/CR-V EX PLATA.jpg'],
         ]);
     }
 
@@ -354,33 +334,33 @@ class ModeloSeeder extends Seeder
         $this->addSeccion($modelo, 'Diseño', 'diseno',
             'Elegancia híbrida con el mismo ADN robusto y premium de la CR-V.',
             'text-left', 0, [
-                ['titulo' => 'Diseño exclusivo e:HEV', 'descripcion' => 'Detalles cromados azulados y emblema e:HEV que distinguen la versión híbrida.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/diseno-1.jpg'],
-                ['titulo' => 'Interior premium con materiales sostenibles', 'descripcion' => 'Materiales reciclados de alta calidad que reflejan el compromiso con el medio ambiente.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/diseno-2.jpg'],
-                ['titulo' => 'Llantas de aleación de 19"', 'descripcion' => 'Diseño aerodinámico exclusivo que optimiza la eficiencia.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/diseno-3.jpg'],
+                ['titulo' => 'Faros delanteros y traseros LED', 'descripcion' => 'Detalles cromados azulados y emblema e:HEV que distinguen la versión híbrida.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/faros_delanteros_y_traseros_led.jpg'],
+                ['titulo' => 'Llantas de aleación de 19"', 'descripcion' => 'Diseño aerodinámico exclusivo que optimiza la eficiencia.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/llantas_19.jpg'],
+                ['titulo' => 'Techo panorámico', 'descripcion' => 'Mayor amplitud y luminosidad para todos los pasajeros.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/techo_panoramico.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Tecnología', 'tecnologia',
             'Lo último en tecnología híbrida combinado con conectividad de vanguardia.',
             'text-right', 1, [
-                ['titulo' => 'Sistema e:HEV', 'descripcion' => 'Tecnología híbrida inteligente que alterna entre motor eléctrico y combustión para máxima eficiencia.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/tecnologia-1.jpg'],
-                ['titulo' => 'Pantalla táctil de 9"', 'descripcion' => 'Con Apple CarPlay y Android Auto inalámbrico integrado.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/tecnologia-2.jpg'],
-                ['titulo' => 'Panel digital personalizable', 'descripcion' => 'Muestra flujo de energía híbrida en tiempo real y datos de eficiencia.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/tecnologia-3.jpg'],
+                ['titulo' => 'Sistema e:HEV', 'descripcion' => 'Tecnología híbrida inteligente que alterna entre motor eléctrico y combustión para máxima eficiencia.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/sistema_ehev.jpg'],
+                ['titulo' => 'Multimedia 9" y pantalla de 10"', 'descripcion' => 'Con Apple CarPlay y Android Auto inalámbrico integrado.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/multimedia_9_y_pantalla_de_10.jpg'],
+                ['titulo' => 'Head-Up Display', 'descripcion' => 'Información proyectada en el parabrisas para no perder la vista del camino.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/head-updisplay.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Motor', 'motor',
             'Potencia híbrida inteligente que combina eficiencia y rendimiento.',
             'text-left', 2, [
-                ['titulo' => 'Motor e:HEV 2.0L', 'descripcion' => 'Sistema híbrido con motor de 2.0L + motor eléctrico para una potencia combinada excepcional.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/motor-1.jpg'],
-                ['titulo' => 'Transmisión e-CVT', 'descripcion' => 'Transiciones imperceptibles entre modos eléctrico, híbrido y combustión.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/motor-2.jpg'],
-                ['titulo' => 'Regeneración de energía', 'descripcion' => 'Sistema que recupera energía en frenado y desaceleración para recargar la batería.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/motor-3.jpg'],
+                ['titulo' => 'Motor e:HEV 2.0L', 'descripcion' => 'Sistema híbrido con motor de 2.0L + motor eléctrico para una potencia combinada excepcional.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/motor.jpg'],
+                ['titulo' => 'Audio BOSE Premium', 'descripcion' => 'Sonido envolvente de alta fidelidad con altavoces estratégicamente ubicados.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/audio_bose.jpg'],
+                ['titulo' => 'Cargador inalámbrico', 'descripcion' => 'Mantené tu smartphone cargado sin cables durante el viaje.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/cargador_inalambrico.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Seguridad', 'seguridad',
             'La misma seguridad de clase mundial con tecnología Honda Sensing de última generación.',
             'text-right', 3, [
-                ['titulo' => 'Honda Sensing completo', 'descripcion' => 'Suite de seguridad activa con ACC, CMBS, LKAS, RDM, LDW y Auto High Beam.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/seguridad-1.jpg'],
-                ['titulo' => '8 airbags de serie', 'descripcion' => 'Protección completa con airbags frontales, laterales, de cortina y de rodilla.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/seguridad-2.jpg'],
-                ['titulo' => 'Estructura ACE reforzada', 'descripcion' => 'Chasis diseñado para proteger a los ocupantes y a los peatones en caso de impacto.', 'imagen' => 'assets/images/fotos/CR-V-eHEV/seguridad-3.jpg'],
+                ['titulo' => 'Frenado de mitigación de colisión', 'descripcion' => 'El sistema detecta peatones y vehículos, alertando y frenando automáticamente.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/frenado_mitigado.jpg'],
+                ['titulo' => 'Airbags + estructura ACE', 'descripcion' => 'Protección completa con airbags frontales, laterales, de cortina y de rodilla.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/airbags.jpg'],
+                ['titulo' => 'LaneWatch y vista múltiple', 'descripcion' => 'Cámaras que amplían la visión del conductor en maniobras y cambios de carril.', 'imagen' => 'assets/images/fotos/CR-V_eHEV/lanewatch_y_vista_multiple.jpg'],
             ]);
 
         $this->addVersion($modelo, 'TOURING', 0, [
@@ -389,16 +369,16 @@ class ModeloSeeder extends Seeder
             'Tracción AWD Real Time',
             'Honda Sensing',
             '8 Airbags',
-            'Pantalla 9" Apple CarPlay y Android Auto',
-            'Sistema BOSE 12 altavoces',
+            'Multimedia 9" Apple CarPlay y Android Auto',
+            'Audio BOSE Premium',
             'Llantas de aleación 19"',
             'Asientos en cuero con calefacción',
             'Techo panorámico eléctrico',
             'Cámara multivista 360°',
         ], [
-            ['nombre' => 'Blanco', 'hex_code' => '#FFFFFF', 'imagen' => 'assets/images/fotos/CR-V-eHEV/versiones/Touring/CRV-eHEV-Blanco.jpg'],
-            ['nombre' => 'Negro', 'hex_code' => '#1A1A1A', 'imagen' => 'assets/images/fotos/CR-V-eHEV/versiones/Touring/CRV-eHEV-Negro.jpg'],
-            ['nombre' => 'Gris', 'hex_code' => '#8C8C8C', 'imagen' => 'assets/images/fotos/CR-V-eHEV/versiones/Touring/CRV-eHEV-Gris.jpg'],
+            ['nombre' => 'Blanco', 'hex_code' => '#FFFFFF', 'imagen' => 'assets/images/fotos/CR-V_eHEV/versiones/CRV HYBRID-Blanco.jpg'],
+            ['nombre' => 'Grafito', 'hex_code' => '#4A4A4A', 'imagen' => 'assets/images/fotos/CR-V_eHEV/versiones/CRV HYBRID-Grafito.jpg'],
+            ['nombre' => 'Plata', 'hex_code' => '#C0C0C0', 'imagen' => 'assets/images/fotos/CR-V_eHEV/versiones/CRV HYBRID-Plata.jpg'],
         ]);
     }
 
@@ -421,68 +401,51 @@ class ModeloSeeder extends Seeder
         $this->addSeccion($modelo, 'Diseño', 'diseno',
             'Presencia imponente. Proporciones robustas. Detalles premium. La Pilot es el SUV de 8 plazas que combina capacidad familiar con diseño sofisticado.',
             'text-left', 0, [
-                ['titulo' => 'Faros Full-LED con DRL', 'descripcion' => 'Presencia frontal contundente con tecnología LED de última generación.', 'imagen' => 'assets/images/fotos/Pilot/diseno-1.jpg'],
-                ['titulo' => 'Interior de 3 filas con espacio real', 'descripcion' => 'Hasta 8 pasajeros con comodidad genuina en cada fila.', 'imagen' => 'assets/images/fotos/Pilot/diseno-2.jpg'],
-                ['titulo' => 'Llantas de aleación de 20"', 'descripcion' => 'Diseño exclusivo que refuerza el carácter premium del Pilot.', 'imagen' => 'assets/images/fotos/Pilot/diseno-3.jpg'],
+                ['titulo' => 'Faros Full-LED y luces traseras LED', 'descripcion' => 'Presencia frontal contundente con tecnología LED de última generación.', 'imagen' => 'assets/images/fotos/Pilot/faros_full_led_y_luces_traseras_led.jpg'],
+                ['titulo' => 'Techo panorámico eléctrico', 'descripcion' => 'Amplitud y luminosidad para todos los pasajeros.', 'imagen' => 'assets/images/fotos/Pilot/techo_panoramico_electrico.jpg'],
+                ['titulo' => 'Llantas de aleación de 20"', 'descripcion' => 'Diseño exclusivo que refuerza el carácter premium del Pilot.', 'imagen' => 'assets/images/fotos/Pilot/llantas_de_aleacion_20.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Tecnología', 'tecnologia',
             'Conectividad total y tecnología inteligente para toda la familia.',
             'text-right', 1, [
-                ['titulo' => 'Pantalla táctil de 9"', 'descripcion' => 'Con Apple CarPlay y Android Auto inalámbrico, navegación integrada y control por voz.', 'imagen' => 'assets/images/fotos/Pilot/tecnologia-1.jpg'],
-                ['titulo' => 'Panel digital de 10.2"', 'descripcion' => 'Instrumentación completamente digital con información personalizable.', 'imagen' => 'assets/images/fotos/Pilot/tecnologia-2.jpg'],
-                ['titulo' => 'Sistema de audio BOSE Premium', 'descripcion' => '12 altavoces con sonido envolvente para una experiencia acústica excepcional.', 'imagen' => 'assets/images/fotos/Pilot/tecnologia-3.jpg'],
+                ['titulo' => 'Pantalla táctil de 9" + Panel digital 10.2"', 'descripcion' => 'Con Apple CarPlay y Android Auto inalámbrico, navegación integrada y control por voz.', 'imagen' => 'assets/images/fotos/Pilot/pantalla_tactil_de_9_+_panel_digital_10.2.jpg'],
+                ['titulo' => 'Audio Premium BOSE', 'descripcion' => '12 altavoces con sonido envolvente para una experiencia acústica excepcional.', 'imagen' => 'assets/images/fotos/Pilot/audio_premium_bose.jpg'],
+                ['titulo' => 'Cargador inalámbrico + Bluetooth + USB', 'descripcion' => 'Conectividad completa con puertos USB en todas las filas.', 'imagen' => 'assets/images/fotos/Pilot/cargador_inalambrico_+_bluetooth_+_puertos_usb_en_todas_las_filas.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Motor', 'motor',
             'Potencia y capacidad para cualquier aventura familiar.',
             'text-left', 2, [
-                ['titulo' => 'Motor 3.5L V6 i-VTEC', 'descripcion' => '285 hp de potencia para mover con autoridad a toda la familia y su equipaje.', 'imagen' => 'assets/images/fotos/Pilot/motor-1.jpg'],
-                ['titulo' => 'Transmisión automática de 10 velocidades', 'descripcion' => 'Cambios rápidos y suaves para una conducción refinada y eficiente.', 'imagen' => 'assets/images/fotos/Pilot/motor-2.jpg'],
-                ['titulo' => 'Tracción AWD i-VTM4', 'descripcion' => 'Sistema de tracción inteligente que se adapta a cualquier condición del camino.', 'imagen' => 'assets/images/fotos/Pilot/motor-3.jpg'],
+                ['titulo' => 'Motor 3.5L V6 i-VTEC', 'descripcion' => '285 hp de potencia para mover con autoridad a toda la familia y su equipaje.', 'imagen' => 'assets/images/fotos/Pilot/motor.jpg'],
+                ['titulo' => 'Transmisión automática con Shift-by-Wire', 'descripcion' => 'Cambios rápidos y suaves para una conducción refinada y eficiente.', 'imagen' => 'assets/images/fotos/Pilot/transmision_automatica_con_shift-by-wire.jpg'],
+                ['titulo' => 'Modos de manejo', 'descripcion' => 'Normal, Econ, Sport, Snow, Tow, Trail, Sand — adaptación total a cualquier terreno.', 'imagen' => 'assets/images/fotos/Pilot/modos_de_manejo_normal,_econ,_sport,_snow,_tow,_trail,_sand.jpg'],
             ]);
 
         $this->addSeccion($modelo, 'Seguridad', 'seguridad',
             'Protección de clase mundial para toda la familia con Honda Sensing.',
             'text-right', 3, [
-                ['titulo' => 'Honda Sensing 360', 'descripcion' => 'La suite de seguridad más completa de Honda con detección en todos los ángulos.', 'imagen' => 'assets/images/fotos/Pilot/seguridad-1.jpg'],
-                ['titulo' => '10 airbags', 'descripcion' => 'Protección máxima para las tres filas de asientos.', 'imagen' => 'assets/images/fotos/Pilot/seguridad-2.jpg'],
-                ['titulo' => 'TrailWatch con 4 cámaras', 'descripcion' => 'Sistema de cámaras off-road que muestra el terreno alrededor del vehículo.', 'imagen' => 'assets/images/fotos/Pilot/seguridad-3.jpg'],
+                ['titulo' => '10 airbags con sensor de vuelco', 'descripcion' => 'Protección máxima para las tres filas de asientos.', 'imagen' => 'assets/images/fotos/Pilot/10_airbags_con_sensor_de_vuelco.jpg'],
+                ['titulo' => 'Estructura ACE', 'descripcion' => 'Chasis diseñado para absorber y distribuir la energía del impacto.', 'imagen' => 'assets/images/fotos/Pilot/estructura_ace.jpg'],
+                ['titulo' => 'Cámara multiángulo + sensores', 'descripcion' => 'Visión completa del entorno con sensores delanteros y traseros.', 'imagen' => 'assets/images/fotos/Pilot/camara_multiangulo_+_sensores_delanteros_y_traseros.jpg'],
             ]);
 
-        $this->addVersion($modelo, 'EXL', 0, [
+        $this->addVersion($modelo, 'TOURING', 0, [
             'Motor 3.5L V6 i-VTEC (285 hp)',
             'Transmisión automática 10 velocidades',
             'Tracción AWD i-VTM4',
             'Honda Sensing',
-            '8 Airbags',
-            'Pantalla 9" Apple CarPlay y Android Auto',
-            'Llantas de aleación 18"',
-            '8 plazas',
-            'Cámara multivista',
-        ], [
-            ['nombre' => 'Blanco', 'hex_code' => '#FFFFFF', 'imagen' => 'assets/images/fotos/Pilot/versiones/EXL/Pilot-EXL-Blanco.jpg'],
-            ['nombre' => 'Negro', 'hex_code' => '#1A1A1A', 'imagen' => 'assets/images/fotos/Pilot/versiones/EXL/Pilot-EXL-Negro.jpg'],
-            ['nombre' => 'Gris', 'hex_code' => '#8C8C8C', 'imagen' => 'assets/images/fotos/Pilot/versiones/EXL/Pilot-EXL-Gris.jpg'],
-        ]);
-
-        $this->addVersion($modelo, 'TOURING', 1, [
-            'Motor 3.5L V6 i-VTEC (285 hp)',
-            'Transmisión automática 10 velocidades',
-            'Tracción AWD i-VTM4',
-            'Honda Sensing 360',
             '10 Airbags',
             'Pantalla 9" Apple CarPlay y Android Auto',
-            'Sistema BOSE Premium 12 altavoces',
+            'Audio BOSE Premium 12 altavoces',
             'Llantas de aleación 20"',
             '8 plazas',
             'Asientos en cuero con calefacción y ventilación',
             'Techo panorámico',
-            'TrailWatch con 4 cámaras',
         ], [
-            ['nombre' => 'Blanco', 'hex_code' => '#FFFFFF', 'imagen' => 'assets/images/fotos/Pilot/versiones/Touring/Pilot-Touring-Blanco.jpg'],
-            ['nombre' => 'Negro', 'hex_code' => '#1A1A1A', 'imagen' => 'assets/images/fotos/Pilot/versiones/Touring/Pilot-Touring-Negro.jpg'],
-            ['nombre' => 'Gris', 'hex_code' => '#8C8C8C', 'imagen' => 'assets/images/fotos/Pilot/versiones/Touring/Pilot-Touring-Gris.jpg'],
+            ['nombre' => 'Blanco', 'hex_code' => '#FFFFFF', 'imagen' => 'assets/images/fotos/Pilot/versiones/PILOT- Blanco.jpg'],
+            ['nombre' => 'Grafito', 'hex_code' => '#4A4A4A', 'imagen' => 'assets/images/fotos/Pilot/versiones/PILOT-Grafito.jpg'],
+            ['nombre' => 'Gris', 'hex_code' => '#8C8C8C', 'imagen' => 'assets/images/fotos/Pilot/versiones/PILOT-Gris.jpg'],
         ]);
     }
 }
