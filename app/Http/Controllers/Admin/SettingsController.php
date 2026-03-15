@@ -105,6 +105,7 @@ class SettingsController extends Controller
         $fields = [
             'form_testdrive_fields' => ['label' => 'Campos formulario Test Drive', 'type' => 'json'],
             'form_cotizar_fields' => ['label' => 'Campos formulario Cotizar', 'type' => 'json'],
+            'form_landing_fields' => ['label' => 'Campos formulario Landing Pages', 'type' => 'json'],
         ];
 
         foreach ($fields as $key => $meta) {

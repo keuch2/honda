@@ -139,38 +139,82 @@
                 </div>
 
                 <!-- Formularios -->
-                <div x-show="tab === 'forms'">
-                    <form action="{{ route('admin.settings.forms') }}" method="POST">
+                <div x-show="tab === 'forms'"
+                     x-data="formFieldsManager({
+                        testdrive: {{ $s('form_testdrive_fields', '[{&quot;name&quot;:&quot;nombre&quot;,&quot;label&quot;:&quot;Nombre Completo&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;telefono&quot;,&quot;label&quot;:&quot;Teléfono&quot;,&quot;type&quot;:&quot;tel&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;email&quot;,&quot;label&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;email&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;ciudad&quot;,&quot;label&quot;:&quot;Ciudad&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;modelo&quot;,&quot;label&quot;:&quot;Modelo&quot;,&quot;type&quot;:&quot;select&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;comentarios&quot;,&quot;label&quot;:&quot;Comentarios&quot;,&quot;type&quot;:&quot;textarea&quot;,&quot;required&quot;:false}]') }},
+                        cotizar: {{ $s('form_cotizar_fields', '[{&quot;name&quot;:&quot;nombre&quot;,&quot;label&quot;:&quot;Nombre Completo&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;telefono&quot;,&quot;label&quot;:&quot;Teléfono&quot;,&quot;type&quot;:&quot;tel&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;email&quot;,&quot;label&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;email&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;ciudad&quot;,&quot;label&quot;:&quot;Ciudad&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;modelo&quot;,&quot;label&quot;:&quot;Modelo&quot;,&quot;type&quot;:&quot;select&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;comentarios&quot;,&quot;label&quot;:&quot;Comentarios&quot;,&quot;type&quot;:&quot;textarea&quot;,&quot;required&quot;:false}]') }},
+                        landing: {{ $s('form_landing_fields', '[{&quot;name&quot;:&quot;nombre&quot;,&quot;label&quot;:&quot;Nombre Completo&quot;,&quot;type&quot;:&quot;text&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;telefono&quot;,&quot;label&quot;:&quot;Teléfono&quot;,&quot;type&quot;:&quot;tel&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;email&quot;,&quot;label&quot;:&quot;Email&quot;,&quot;type&quot;:&quot;email&quot;,&quot;required&quot;:true},{&quot;name&quot;:&quot;comentarios&quot;,&quot;label&quot;:&quot;Comentarios&quot;,&quot;type&quot;:&quot;textarea&quot;,&quot;required&quot;:false}]') }}
+                     })">
+                    <form action="{{ route('admin.settings.forms') }}" method="POST" @submit="serializeAll()">
                         @csrf
-                        <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
-                            <h3 class="text-lg font-medium text-gray-900">Configuración de Formularios</h3>
-                            <p class="text-sm text-gray-500">Editá los campos de los formularios de Test Drive y Cotizar. Formato JSON con la estructura de campos.</p>
+                        <input type="hidden" name="form_testdrive_fields" :value="serialized.testdrive">
+                        <input type="hidden" name="form_cotizar_fields" :value="serialized.cotizar">
+                        <input type="hidden" name="form_landing_fields" :value="serialized.landing">
 
+                        <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-8">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Campos formulario Test Drive</label>
-                                <textarea name="form_testdrive_fields" rows="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm font-mono text-xs">{{ $s('form_testdrive_fields', '[
-    {"name": "nombre", "label": "Nombre Completo", "type": "text", "required": true},
-    {"name": "telefono", "label": "Teléfono", "type": "tel", "required": true},
-    {"name": "email", "label": "Email", "type": "email", "required": true},
-    {"name": "ciudad", "label": "Ciudad", "type": "text", "required": true},
-    {"name": "modelo", "label": "Modelo", "type": "select", "required": true},
-    {"name": "comentarios", "label": "Comentarios", "type": "textarea", "required": false}
-]') }}</textarea>
+                                <h3 class="text-lg font-medium text-gray-900">Configuración de Formularios</h3>
+                                <p class="text-sm text-gray-500">Agregá, editá o eliminá los campos de cada formulario. Los campos de tipo <strong>Select (Modelos)</strong> se completan automáticamente con los modelos cargados en el sitio.</p>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Campos formulario Cotizar</label>
-                                <textarea name="form_cotizar_fields" rows="10" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm font-mono text-xs">{{ $s('form_cotizar_fields', '[
-    {"name": "nombre", "label": "Nombre Completo", "type": "text", "required": true},
-    {"name": "telefono", "label": "Teléfono", "type": "tel", "required": true},
-    {"name": "email", "label": "Email", "type": "email", "required": true},
-    {"name": "ciudad", "label": "Ciudad", "type": "text", "required": true},
-    {"name": "modelo", "label": "Modelo", "type": "select", "required": true},
-    {"name": "comentarios", "label": "Comentarios", "type": "textarea", "required": false}
-]') }}</textarea>
-                            </div>
+                            <template x-for="section in sections" :key="section.key">
+                                <div class="space-y-3">
+                                    <h4 class="text-md font-semibold text-gray-800 border-b pb-2" x-text="section.title"></h4>
 
-                            <div class="flex justify-end">
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full text-sm">
+                                            <thead>
+                                                <tr class="text-left text-xs text-gray-500 uppercase tracking-wider">
+                                                    <th class="px-2 py-1 w-8">#</th>
+                                                    <th class="px-2 py-1">Nombre campo</th>
+                                                    <th class="px-2 py-1">Etiqueta</th>
+                                                    <th class="px-2 py-1">Tipo</th>
+                                                    <th class="px-2 py-1 w-20 text-center">Requerido</th>
+                                                    <th class="px-2 py-1 w-16"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="(field, idx) in forms[section.key]" :key="idx">
+                                                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                                        <td class="px-2 py-2 text-gray-400" x-text="idx + 1"></td>
+                                                        <td class="px-2 py-2">
+                                                            <input type="text" x-model="field.name" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="nombre_campo">
+                                                        </td>
+                                                        <td class="px-2 py-2">
+                                                            <input type="text" x-model="field.label" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Etiqueta visible">
+                                                        </td>
+                                                        <td class="px-2 py-2">
+                                                            <select x-model="field.type" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
+                                                                <option value="text">Texto</option>
+                                                                <option value="email">Email</option>
+                                                                <option value="tel">Teléfono</option>
+                                                                <option value="number">Número</option>
+                                                                <option value="textarea">Área de texto</option>
+                                                                <option value="select">Select (Modelos)</option>
+                                                            </select>
+                                                        </td>
+                                                        <td class="px-2 py-2 text-center">
+                                                            <input type="checkbox" x-model="field.required" class="h-4 w-4 rounded border-gray-300 text-indigo-600">
+                                                        </td>
+                                                        <td class="px-2 py-2 text-center">
+                                                            <button type="button" @click="removeField(section.key, idx)" class="text-red-500 hover:text-red-700" title="Eliminar campo">
+                                                                <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <button type="button" @click="addField(section.key)" class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                        Agregar campo
+                                    </button>
+                                </div>
+                            </template>
+
+                            <div class="flex justify-end pt-4 border-t">
                                 <button type="submit" class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 font-semibold uppercase tracking-widest">Guardar</button>
                             </div>
                         </div>
@@ -202,3 +246,36 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('formFieldsManager', (initial) => ({
+        forms: {
+            testdrive: JSON.parse(JSON.stringify(initial.testdrive || [])),
+            cotizar: JSON.parse(JSON.stringify(initial.cotizar || [])),
+            landing: JSON.parse(JSON.stringify(initial.landing || [])),
+        },
+        serialized: { testdrive: '', cotizar: '', landing: '' },
+        sections: [
+            { key: 'testdrive', title: 'Formulario Test Drive' },
+            { key: 'cotizar', title: 'Formulario Cotizar' },
+            { key: 'landing', title: 'Formulario Landing Pages' },
+        ],
+        addField(key) {
+            this.forms[key].push({ name: '', label: '', type: 'text', required: false });
+        },
+        removeField(key, idx) {
+            if (confirm('¿Eliminar este campo?')) {
+                this.forms[key].splice(idx, 1);
+            }
+        },
+        serializeAll() {
+            this.serialized.testdrive = JSON.stringify(this.forms.testdrive);
+            this.serialized.cotizar = JSON.stringify(this.forms.cotizar);
+            this.serialized.landing = JSON.stringify(this.forms.landing);
+        }
+    }));
+});
+</script>
+@endpush
