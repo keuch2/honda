@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer(['layouts.public', 'partials.header', 'partials.footer'], function ($view) {
+        View::composer(['layouts.public', 'partials.header', 'partials.footer', 'home.index', 'pages.modelos-dynamic'], function ($view) {
             if (!Schema::hasTable('modelos') || !Schema::hasTable('site_settings')) {
                 return;
             }
@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
             $activeModelos = Modelo::where('is_active', true)
                 ->where('show_in_menu', true)
                 ->orderBy('orden')
-                ->get(['id', 'nombre', 'slug']);
+                ->get(['id', 'nombre', 'slug', 'card_image', 'categoria']);
 
             $whatsappNumber = SiteSetting::get('whatsapp_number', '595217285717');
             $whatsappMessage = SiteSetting::get('whatsapp_message', '');

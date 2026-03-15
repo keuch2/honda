@@ -53,55 +53,21 @@
 
                 <div class="carousel-container">
                     <div class="carousel-track">
-                        <div class="modelo-card" data-category="suv">
+                        @foreach($activeModelos ?? [] as $modelo)
+                        <div class="modelo-card" data-category="{{ $modelo->categoria ?? 'suv' }}">
                             <div class="modelo-image">
-                                <a href="{{ url('wr-v') }}">
-                                    <img src="{{ asset('assets/images/modelos/wr-v.png') }}" alt="WR-V">
+                                <a href="{{ url($modelo->slug) }}">
+                                    @if($modelo->card_image)
+                                        <img src="{{ asset($modelo->card_image) }}" alt="{{ $modelo->nombre }}">
+                                    @else
+                                        <img src="{{ asset('assets/images/modelos/' . $modelo->slug . '.png') }}" alt="{{ $modelo->nombre }}">
+                                    @endif
                                 </a>
                             </div>
-                            <h3 class="modelo-name">WR-V</h3>
-                            <a href="{{ url('wr-v') }}" class="btn-modelo">ME INTERESA ESTE VEHÍCULO</a>
+                            <h3 class="modelo-name">{{ strtoupper($modelo->nombre) }}</h3>
+                            <a href="{{ url($modelo->slug) }}" class="btn-modelo">ME INTERESA ESTE VEHÍCULO</a>
                         </div>
-
-                        <div class="modelo-card" data-category="suv">
-                            <div class="modelo-image">
-                                <a href="{{ url('hr-v') }}">
-                                    <img src="{{ asset('assets/images/modelos/hrv.png') }}" alt="HR-V">
-                                </a>
-                            </div>
-                            <h3 class="modelo-name">HR-V</h3>
-                            <a href="{{ url('hr-v') }}" class="btn-modelo">ME INTERESA ESTE VEHÍCULO</a>
-                        </div>
-
-                        <div class="modelo-card" data-category="suv">
-                            <div class="modelo-image">
-                                <a href="{{ url('cr-v') }}">
-                                    <img src="{{ asset('assets/images/modelos/crv.png') }}" alt="CR-V">
-                                </a>
-                            </div>
-                            <h3 class="modelo-name">CR-V</h3>
-                            <a href="{{ url('cr-v') }}" class="btn-modelo">ME INTERESA ESTE VEHÍCULO</a>
-                        </div>
-
-                        <div class="modelo-card" data-category="suv">
-                            <div class="modelo-image">
-                                <a href="{{ url('cr-v-ehev') }}">
-                                    <img src="{{ asset('assets/images/modelos/crv-ehev.png') }}" alt="CR-V eHEV">
-                                </a>
-                            </div>
-                            <h3 class="modelo-name">CR-V eHEV</h3>
-                            <a href="{{ url('cr-v-ehev') }}" class="btn-modelo">ME INTERESA ESTE VEHÍCULO</a>
-                        </div>
-
-                        <div class="modelo-card" data-category="suv">
-                            <div class="modelo-image">
-                                <a href="{{ url('pilot') }}">
-                                    <img src="{{ asset('assets/images/modelos/pilot.png') }}" alt="PILOT">
-                                </a>
-                            </div>
-                            <h3 class="modelo-name">PILOT</h3>
-                            <a href="{{ url('pilot') }}" class="btn-modelo">ME INTERESA ESTE VEHÍCULO</a>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
