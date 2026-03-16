@@ -28,49 +28,4 @@
         </div>
     </div>
 
-    @push('scripts')
-    <script src="{{ asset('tinymce/tinymce.min.js') }}"></script>
-    <script>
-        tinymce.init({
-            selector: '#contenido',
-            height: 500,
-            menubar: true,
-            license_key: 'gpl',
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount'
-            ],
-            toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image media link | code | help',
-            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 14px; line-height: 1.6; }',
-            language: 'es',
-            branding: false,
-            promotion: false,
-            image_title: true,
-            automatic_uploads: true,
-            file_picker_types: 'image',
-            images_upload_handler: function (blobInfo, success, failure) {
-                let formData = new FormData();
-                formData.append('file', blobInfo.blob(), blobInfo.filename());
-                formData.append('_token', '{{ csrf_token() }}');
-
-                fetch('{{ route("admin.noticias.upload-image") }}', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.location) {
-                        success(result.location);
-                    } else {
-                        failure('Error al subir la imagen');
-                    }
-                })
-                .catch(() => {
-                    failure('Error al subir la imagen');
-                });
-            }
-        });
-    </script>
-    @endpush
 </x-app-layout>

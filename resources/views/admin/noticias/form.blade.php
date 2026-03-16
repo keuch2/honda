@@ -32,11 +32,11 @@
         @enderror
     </div>
 
-    <!-- Contenido -->
+    <!-- Contenido (Quill WYSIWYG) -->
     <div>
-        <label for="contenido" class="block text-sm font-medium text-gray-700 mb-2">Contenido de la noticia *</label>
-        <textarea name="contenido" id="contenido" required
-                  class="mt-1 block w-full @error('contenido') border-red-500 @enderror">{{ old('contenido', $noticia->contenido_html ?? '') }}</textarea>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Contenido de la noticia *</label>
+        <div id="quill-editor" class="bg-white" style="min-height: 300px;">{!! old('contenido', $noticia->contenido_html ?? '') !!}</div>
+        <input type="hidden" name="contenido" id="contenido-hidden">
         @error('contenido')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -106,3 +106,68 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+<style>
+    #quill-editor { border: 1px solid #d1d5db; border-radius: 0 0 0.375rem 0.375rem; }
+    .ql-toolbar.ql-snow { border: 1px solid #d1d5db; border-radius: 0.375rem 0.375rem 0 0; background: #f9fafb; }
+    .ql-editor { min-height: 300px; font-size: 14px; line-height: 1.6; }
+    .ql-editor img { max-width: 100%; height: auto; }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: {
+                container: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['blockquote'],
+                    ['link', 'image'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: function() {
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'file');
+                        input.setAttribute('accept', 'image/*');
+                        input.click();
+                        input.onchange = async () => {
+                            const file = input.files[0];
+                            if (!file) return;
+                            const formData = new FormData();
+                            formData.append('file', file);
+                            formData.append('_token', '{{ csrf_token() }}');
+                            try {
+                                const res = await fetch('{{ route("admin.noticias.upload-image") }}', { method: 'POST', body: formData });
+                                const data = await res.json();
+                                if (data.location) {
+                                    const range = quill.getSelection(true);
+                                    quill.insertEmbed(range.index, 'image', data.location);
+                                }
+                            } catch(e) { alert('Error al subir imagen'); }
+                        };
+                    }
+                }
+            }
+        }
+    });
+
+    // Sync Quill content to hidden input on form submit
+    const form = document.querySelector('form');
+    const hiddenInput = document.getElementById('contenido-hidden');
+    form.addEventListener('submit', function() {
+        hiddenInput.value = quill.root.innerHTML;
+    });
+});
+</script>
+@endpush
