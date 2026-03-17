@@ -58,7 +58,7 @@
                             <div class="modelo-image">
                                 <a href="{{ url($modelo->slug) }}">
                                     @if($modelo->card_image)
-                                        <img src="{{ asset($modelo->card_image) }}" alt="{{ $modelo->nombre }}">
+                                        <img src="{{ $modelo->cardImageUrl() }}" alt="{{ $modelo->nombre }}">
                                     @else
                                         <img src="{{ asset('assets/images/modelos/' . $modelo->slug . '.png') }}" alt="{{ $modelo->nombre }}">
                                     @endif
