@@ -170,6 +170,7 @@
                                         <table class="min-w-full text-sm">
                                             <thead>
                                                 <tr class="text-left text-xs text-gray-500 uppercase tracking-wider">
+                                                    <th class="px-2 py-1 w-6"></th>
                                                     <th class="px-2 py-1 w-8">#</th>
                                                     <th class="px-2 py-1">Nombre campo</th>
                                                     <th class="px-2 py-1">Etiqueta</th>
@@ -178,9 +179,12 @@
                                                     <th class="px-2 py-1 w-16"></th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody :id="'sortable-' + section.key">
                                                 <template x-for="(field, idx) in forms[section.key]" :key="idx">
                                                     <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                                        <td class="px-2 py-2 text-gray-400 drag-handle cursor-grab active:cursor-grabbing" title="Arrastrar para reordenar">
+                                                            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm8-16a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+                                                        </td>
                                                         <td class="px-2 py-2 text-gray-400" x-text="idx + 1"></td>
                                                         <td class="px-2 py-2">
                                                             <input type="text" x-model="field.name" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="nombre_campo">
@@ -253,6 +257,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
     window.__formFieldsData = {
         testdrive: {!! $formTestdrive !!},
@@ -274,6 +279,29 @@ document.addEventListener('alpine:init', () => {
             this.forms.testdrive = JSON.parse(JSON.stringify(data.testdrive || []));
             this.forms.cotizar = JSON.parse(JSON.stringify(data.cotizar || []));
             this.forms.landing = JSON.parse(JSON.stringify(data.landing || []));
+            this.$nextTick(() => {
+                this.sections.forEach(s => {
+                    const el = document.getElementById('sortable-' + s.key);
+                    if (el) this.initSortable(s.key, el);
+                });
+            });
+        },
+        initSortable(key, el) {
+            Sortable.create(el, {
+                handle: '.drag-handle',
+                animation: 150,
+                ghostClass: 'bg-indigo-50',
+                onEnd: (evt) => {
+                    if (evt.oldIndex !== evt.newIndex) {
+                        this.moveField(key, evt.oldIndex, evt.newIndex);
+                    }
+                }
+            });
+        },
+        moveField(key, from, to) {
+            const arr = this.forms[key];
+            const moved = arr.splice(from, 1)[0];
+            arr.splice(to, 0, moved);
         },
         addField(key) {
             this.forms[key].push({ name: '', label: '', type: 'text', required: false });
