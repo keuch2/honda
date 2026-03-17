@@ -170,21 +170,18 @@
                                         <table class="min-w-full text-sm">
                                             <thead>
                                                 <tr class="text-left text-xs text-gray-500 uppercase tracking-wider">
-                                                    <th class="px-2 py-1 w-6"></th>
                                                     <th class="px-2 py-1 w-8">#</th>
                                                     <th class="px-2 py-1">Nombre campo</th>
                                                     <th class="px-2 py-1">Etiqueta</th>
                                                     <th class="px-2 py-1">Tipo</th>
                                                     <th class="px-2 py-1 w-20 text-center">Requerido</th>
-                                                    <th class="px-2 py-1 w-16"></th>
+                                                    <th class="px-2 py-1 w-24 text-center">Orden</th>
+                                                    <th class="px-2 py-1 w-10"></th>
                                                 </tr>
                                             </thead>
-                                            <tbody :id="'sortable-' + section.key">
-                                                <template x-for="(field, idx) in forms[section.key]" :key="idx">
+                                            <tbody>
+                                                <template x-for="(field, idx) in forms[section.key]" :key="field._uid">
                                                     <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                                        <td class="px-2 py-2 text-gray-400 drag-handle cursor-grab active:cursor-grabbing" title="Arrastrar para reordenar">
-                                                            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M8 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm8-16a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
-                                                        </td>
                                                         <td class="px-2 py-2 text-gray-400" x-text="idx + 1"></td>
                                                         <td class="px-2 py-2">
                                                             <input type="text" x-model="field.name" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="nombre_campo">
@@ -204,6 +201,16 @@
                                                         </td>
                                                         <td class="px-2 py-2 text-center">
                                                             <input type="checkbox" x-model="field.required" class="h-4 w-4 rounded border-gray-300 text-indigo-600">
+                                                        </td>
+                                                        <td class="px-2 py-2 text-center">
+                                                            <div class="inline-flex items-center gap-1">
+                                                                <button type="button" @click="moveUp(section.key, idx)" :disabled="idx === 0" class="p-0.5 rounded hover:bg-gray-200 disabled:opacity-25 disabled:cursor-default" title="Subir">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                                                                </button>
+                                                                <button type="button" @click="moveDown(section.key, idx)" :disabled="idx === forms[section.key].length - 1" class="p-0.5 rounded hover:bg-gray-200 disabled:opacity-25 disabled:cursor-default" title="Bajar">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                                                </button>
+                                                            </div>
                                                         </td>
                                                         <td class="px-2 py-2 text-center">
                                                             <button type="button" @click="removeField(section.key, idx)" class="text-red-500 hover:text-red-700" title="Eliminar campo">
@@ -257,7 +264,6 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
     window.__formFieldsData = {
         testdrive: {!! $formTestdrive !!},
@@ -266,6 +272,10 @@
     };
 </script>
 <script>
+let _uidCounter = 0;
+function assignUids(arr) {
+    return arr.map(f => ({ ...f, _uid: ++_uidCounter }));
+}
 document.addEventListener('alpine:init', () => {
     Alpine.data('formFieldsManager', () => ({
         forms: { testdrive: [], cotizar: [], landing: [] },
@@ -276,45 +286,22 @@ document.addEventListener('alpine:init', () => {
             { key: 'landing', title: 'Formulario Landing Pages' },
         ],
         initData(data) {
-            this.forms.testdrive = JSON.parse(JSON.stringify(data.testdrive || []));
-            this.forms.cotizar = JSON.parse(JSON.stringify(data.cotizar || []));
-            this.forms.landing = JSON.parse(JSON.stringify(data.landing || []));
-            this.$nextTick(() => {
-                this.sections.forEach(s => {
-                    const el = document.getElementById('sortable-' + s.key);
-                    if (el) this.initSortable(s.key, el);
-                });
-            });
+            this.forms.testdrive = assignUids(JSON.parse(JSON.stringify(data.testdrive || [])));
+            this.forms.cotizar = assignUids(JSON.parse(JSON.stringify(data.cotizar || [])));
+            this.forms.landing = assignUids(JSON.parse(JSON.stringify(data.landing || [])));
         },
-        initSortable(key, el) {
-            Sortable.create(el, {
-                handle: '.drag-handle',
-                animation: 150,
-                ghostClass: 'bg-indigo-50',
-                onEnd: (evt) => {
-                    const oldIdx = evt.oldIndex;
-                    const newIdx = evt.newIndex;
-                    // Revert the DOM move — let Alpine handle rendering
-                    const item = evt.item;
-                    if (oldIdx < newIdx) {
-                        evt.from.insertBefore(item, evt.from.children[oldIdx]);
-                    } else {
-                        evt.from.insertBefore(item, evt.from.children[oldIdx + 1]);
-                    }
-                    if (oldIdx !== newIdx) {
-                        this.moveField(key, oldIdx, newIdx);
-                    }
-                }
-            });
+        moveUp(key, idx) {
+            if (idx <= 0) return;
+            const arr = this.forms[key];
+            [arr[idx - 1], arr[idx]] = [arr[idx], arr[idx - 1]];
         },
-        moveField(key, from, to) {
-            const arr = [...this.forms[key]];
-            const [moved] = arr.splice(from, 1);
-            arr.splice(to, 0, moved);
-            this.forms[key] = arr;
+        moveDown(key, idx) {
+            const arr = this.forms[key];
+            if (idx >= arr.length - 1) return;
+            [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
         },
         addField(key) {
-            this.forms[key].push({ name: '', label: '', type: 'text', required: false });
+            this.forms[key].push({ name: '', label: '', type: 'text', required: false, _uid: ++_uidCounter });
         },
         removeField(key, idx) {
             if (confirm('¿Eliminar este campo?')) {
@@ -322,9 +309,10 @@ document.addEventListener('alpine:init', () => {
             }
         },
         serializeAll() {
-            this.serialized.testdrive = JSON.stringify(this.forms.testdrive);
-            this.serialized.cotizar = JSON.stringify(this.forms.cotizar);
-            this.serialized.landing = JSON.stringify(this.forms.landing);
+            const clean = arr => arr.map(({_uid, ...rest}) => rest);
+            this.serialized.testdrive = JSON.stringify(clean(this.forms.testdrive));
+            this.serialized.cotizar = JSON.stringify(clean(this.forms.cotizar));
+            this.serialized.landing = JSON.stringify(clean(this.forms.landing));
         }
     }));
 });
