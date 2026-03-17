@@ -15,14 +15,6 @@
         height: auto;
         min-height: 600px;
     }
-    .modelo-hero.landing-active::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(105deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.05) 100%);
-        z-index: 1;
-        pointer-events: none;
-    }
     .landing-hero-layout {
         position: relative;
         z-index: 2;
@@ -36,11 +28,19 @@
     .landing-hero-form-card {
         background: #fff;
         border-radius: 14px;
-        padding: 36px 32px;
+        padding: 36px 36px;
         box-shadow: 0 24px 64px rgba(0,0,0,0.35);
-        width: 420px;
+        width: 640px;
         max-width: 100%;
         flex-shrink: 0;
+    }
+    .lp-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 16px;
+    }
+    .lp-form-grid .form-group.full-width {
+        grid-column: 1 / -1;
     }
     .landing-hero-form-card h2 {
         font-size: 22px;
@@ -127,12 +127,20 @@
         font-size: 13px;
     }
     .lp-error-msg p { margin: 3px 0; }
+    .lp-form .form-group input[disabled],
+    .lp-form .form-group input:disabled {
+        background: #f0f0f0;
+        color: #555;
+        cursor: default;
+    }
     @media (max-width: 900px) {
         .landing-hero-layout {
             justify-content: center;
             padding: 30px 20px;
         }
-        .landing-hero-form-card { width: 100%; max-width: 480px; padding: 28px 22px; }
+        .landing-hero-form-card { width: 100%; max-width: 640px; padding: 28px 22px; }
+        .lp-form-grid { grid-template-columns: 1fr; }
+        .lp-form-grid .form-group.full-width { grid-column: auto; }
     }
     @media (max-width: 480px) {
         .landing-hero-layout { padding: 24px 16px; }
@@ -173,13 +181,18 @@
                         <input type="hidden" name="utm_campaign" value="{{ request('utm_campaign') }}">
                         <input type="hidden" name="utm_content" value="{{ request('utm_content') }}">
 
+                        <div class="lp-form-grid">
                         @foreach($formCotizarFields ?? [] as $field)
                             @if($field['type'] === 'select' && $field['name'] === 'modelo')
                                 <input type="hidden" name="modelo" value="{{ $modelo->nombre }}">
+                                <div class="form-group full-width">
+                                    <label>{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
+                                    <input type="text" value="{{ $modelo->nombre }}" disabled>
+                                </div>
                             @elseif($field['type'] === 'textarea')
-                                <div class="form-group">
+                                <div class="form-group full-width">
                                     <label for="lp-{{ $field['name'] }}">{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>
-                                    <textarea id="lp-{{ $field['name'] }}" name="{{ $field['name'] }}" rows="3" {{ !empty($field['required']) ? 'required' : '' }} placeholder="{{ $field['label'] }}">{{ old($field['name']) }}</textarea>
+                                    <textarea id="lp-{{ $field['name'] }}" name="{{ $field['name'] }}" rows="2" {{ !empty($field['required']) ? 'required' : '' }} placeholder="{{ $field['label'] }}">{{ old($field['name']) }}</textarea>
                                 </div>
                             @else
                                 <div class="form-group">
@@ -188,6 +201,7 @@
                                 </div>
                             @endif
                         @endforeach
+                        </div>
 
                         <button type="submit" class="lp-btn-submit">Solicitar Cotización</button>
                     </form>
