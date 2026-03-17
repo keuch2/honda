@@ -292,16 +292,26 @@ document.addEventListener('alpine:init', () => {
                 animation: 150,
                 ghostClass: 'bg-indigo-50',
                 onEnd: (evt) => {
-                    if (evt.oldIndex !== evt.newIndex) {
-                        this.moveField(key, evt.oldIndex, evt.newIndex);
+                    const oldIdx = evt.oldIndex;
+                    const newIdx = evt.newIndex;
+                    // Revert the DOM move — let Alpine handle rendering
+                    const item = evt.item;
+                    if (oldIdx < newIdx) {
+                        evt.from.insertBefore(item, evt.from.children[oldIdx]);
+                    } else {
+                        evt.from.insertBefore(item, evt.from.children[oldIdx + 1]);
+                    }
+                    if (oldIdx !== newIdx) {
+                        this.moveField(key, oldIdx, newIdx);
                     }
                 }
             });
         },
         moveField(key, from, to) {
-            const arr = this.forms[key];
-            const moved = arr.splice(from, 1)[0];
+            const arr = [...this.forms[key]];
+            const [moved] = arr.splice(from, 1);
             arr.splice(to, 0, moved);
+            this.forms[key] = arr;
         },
         addField(key) {
             this.forms[key].push({ name: '', label: '', type: 'text', required: false });
