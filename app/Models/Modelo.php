@@ -74,7 +74,7 @@ class Modelo extends Model
             return $this->hero_image;
         }
 
-        return asset($this->hero_image);
+        return asset('storage/' . $this->hero_image);
     }
 
     public function cardImageUrl(): ?string
@@ -83,7 +83,7 @@ class Modelo extends Model
             return null;
         }
 
-        return asset($this->card_image);
+        return asset('storage/' . $this->card_image);
     }
 
     public function fichaTecnicaUrl(): ?string
@@ -92,6 +92,6 @@ class Modelo extends Model
             return null;
         }
 
-        return asset($this->ficha_tecnica_pdf);
+        return asset('storage/' . $this->ficha_tecnica_pdf);
     }
 }
