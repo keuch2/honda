@@ -4,9 +4,12 @@ use App\Http\Controllers\Admin\LandingPageController as AdminLandingPageControll
 use App\Http\Controllers\Admin\LeadController as AdminLeadController;
 use App\Http\Controllers\Admin\ModeloController as AdminModeloController;
 use App\Http\Controllers\Admin\NoticiaController as AdminNoticiaController;
+use App\Http\Controllers\Admin\OfertaController as AdminOfertaController;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
+use App\Http\Controllers\Admin\UbicacionController as AdminUbicacionController;
 use App\Http\Controllers\Admin\UsadoController as AdminUsadoController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Api\UbicacionApiController;
 use App\Http\Controllers\ModeloPageController;
 use App\Http\Controllers\NoticiaController;
 use App\Http\Controllers\ProfileController;
@@ -42,6 +45,13 @@ Route::get('/red-ventas', function () {
 Route::get('/posventa', function () {
     return view('pages.posventa');
 })->name('posventa');
+
+// API pública para mapas
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('ubicaciones', [UbicacionApiController::class, 'all'])->name('ubicaciones.all');
+    Route::get('ubicaciones/showrooms', [UbicacionApiController::class, 'showrooms'])->name('ubicaciones.showrooms');
+    Route::get('ubicaciones/talleres', [UbicacionApiController::class, 'talleres'])->name('ubicaciones.talleres');
+});
 
 Route::get('/modelos', [ModeloPageController::class, 'index'])->name('modelos');
 
@@ -150,6 +160,24 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::get('leads/export', [AdminLeadController::class, 'export'])->name('leads.export');
     Route::get('leads/{lead}', [AdminLeadController::class, 'show'])->name('leads.show');
     Route::delete('leads/{lead}', [AdminLeadController::class, 'destroy'])->name('leads.destroy');
+
+    // Ubicaciones (Showrooms y Talleres)
+    Route::get('ubicaciones', [AdminUbicacionController::class, 'index'])->name('ubicaciones.index');
+    Route::get('ubicaciones/create', [AdminUbicacionController::class, 'create'])->name('ubicaciones.create');
+    Route::post('ubicaciones', [AdminUbicacionController::class, 'store'])->name('ubicaciones.store');
+    Route::get('ubicaciones/{ubicacion}/edit', [AdminUbicacionController::class, 'edit'])->name('ubicaciones.edit');
+    Route::put('ubicaciones/{ubicacion}', [AdminUbicacionController::class, 'update'])->name('ubicaciones.update');
+    Route::patch('ubicaciones/{ubicacion}', [AdminUbicacionController::class, 'update']);
+    Route::delete('ubicaciones/{ubicacion}', [AdminUbicacionController::class, 'destroy'])->name('ubicaciones.destroy');
+
+    // Ofertas y Campañas
+    Route::get('ofertas', [AdminOfertaController::class, 'index'])->name('ofertas.index');
+    Route::get('ofertas/create', [AdminOfertaController::class, 'create'])->name('ofertas.create');
+    Route::post('ofertas', [AdminOfertaController::class, 'store'])->name('ofertas.store');
+    Route::get('ofertas/{oferta}/edit', [AdminOfertaController::class, 'edit'])->name('ofertas.edit');
+    Route::put('ofertas/{oferta}', [AdminOfertaController::class, 'update'])->name('ofertas.update');
+    Route::patch('ofertas/{oferta}', [AdminOfertaController::class, 'update']);
+    Route::delete('ofertas/{oferta}', [AdminOfertaController::class, 'destroy'])->name('ofertas.destroy');
 
     // Settings
     Route::get('settings', [AdminSettingsController::class, 'index'])->name('settings.index');

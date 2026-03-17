@@ -32,93 +32,43 @@
                         Sabemos lo importante que es para el cliente sentir un respaldo profesional de la marca. Por eso, implementamos los 12 años de experiencia de la Universidad Honda en nuestros talleres. Los técnicos están en constante estudios con pruebas que son controlados por la fábrica. Teniendo a nuestro Jefe de Taller con certificación de la fábrica como Instructor Honda de la región.
                     </p>
                     
-                    <!-- Talleres Oficiales -->
+                    @php
+                        $talleres = \App\Models\Ubicacion::activas()->talleres()->ordenadas()->get();
+                        $oficiales = $talleres->where('tipo', 'taller_oficial');
+                        $autorizados = $talleres->where('tipo', 'taller_autorizado');
+                    @endphp
+
+                    @if($oficiales->isNotEmpty())
                     <div class="talleres-group">
                         <h3 class="talleres-subtitle">Talleres Oficiales</h3>
-                        
+                        @foreach($oficiales as $taller)
                         <div class="taller-item">
-                            <p class="taller-name">Asunción</p>
-                            <p class="taller-address">Avda. Eusebio Ayala esq. Camilo Recalde</p>
-                            <p class="taller-phone">(+59521) 728 5717</p>
-                            <a href="https://maps.app.goo.gl/FffQprws4SNn7gHKA" target="_blank" class="taller-link">Ver en Google Maps →</a>
+                            <p class="taller-name">{{ $taller->ciudad ?? $taller->nombre }}</p>
+                            @if($taller->direccion)<p class="taller-address">{{ $taller->direccion }}</p>@endif
+                            @if($taller->telefono)<p class="taller-phone">{{ $taller->telefono }}</p>@endif
+                            @if($taller->maps_url)
+                                <a href="{{ $taller->maps_url }}" target="_blank" class="taller-link">Ver en Google Maps →</a>
+                            @endif
                         </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Ciudad del Este</p>
-                            <p class="taller-address">Avda. Puente Cavalcanti c/ Abdon Palacios</p>
-                            <p class="taller-phone">(+59561) 574 410</p>
-                            <a href="https://maps.app.goo.gl/Y52dJNpXNJHZ84T79" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
+                        @endforeach
                     </div>
-                    
-                    <!-- Talleres Autorizados -->
+                    @endif
+
+                    @if($autorizados->isNotEmpty())
                     <div class="talleres-group">
                         <h3 class="talleres-subtitle">Talleres Autorizados</h3>
-                        
+                        @foreach($autorizados as $taller)
                         <div class="taller-item">
-                            <p class="taller-name">Encarnación - Ruschel</p>
-                            <p class="taller-address">Curupayty c/ Waldino Lovera</p>
-                            <p class="taller-phone">(0994) 857 840</p>
-                            <a href="https://maps.app.goo.gl/FUN8P28o8DErueur5" target="_blank" class="taller-link">Ver en Google Maps →</a>
+                            <p class="taller-name">{{ $taller->nombre }}</p>
+                            @if($taller->direccion)<p class="taller-address">{{ $taller->direccion }}</p>@endif
+                            @if($taller->telefono)<p class="taller-phone">{{ $taller->telefono }}</p>@endif
+                            @if($taller->maps_url)
+                                <a href="{{ $taller->maps_url }}" target="_blank" class="taller-link">Ver en Google Maps →</a>
+                            @endif
                         </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Hohenau - Ruschel</p>
-                            <p class="taller-address">Avda Carlos A. López y Juan E. Oleary</p>
-                            <p class="taller-phone">(0995) 372 600</p>
-                            <a href="https://maps.app.goo.gl/GQvrhVLsngREQn61A" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Campo 8 - Taller Altona</p>
-                            <p class="taller-address">Ruta PY 02, Km 218</p>
-                            <p class="taller-phone">(0984) 427 419</p>
-                            <p class="taller-phone">(0972) 915 618</p>
-                            <a href="https://maps.app.goo.gl/pP3uYXeME9oNJQ9C6" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Loma Plata - Motormack</p>
-                            <p class="taller-address">Avda. Central esq. Uruguay</p>
-                            <p class="taller-phone">(0983) 577 527</p>
-                            <a href="https://maps.app.goo.gl/kAMrmwLs1zgAPRuFA" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Santa Rosa del Aguaray - Fogasa Auto Parts S.A</p>
-                            <p class="taller-address">Ruta Py 08 Km 327</p>
-                            <p class="taller-phone">(0992) 225 723</p>
-                            <a href="https://maps.app.goo.gl/vfKqfsSp1okEdvSp7" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Katuete - Auto Diesel Paraná</p>
-                            <p class="taller-address">Perpetuo Socorro 140801</p>
-                            <p class="taller-phone">(0983) 597 632</p>
-                            <a href="https://maps.app.goo.gl/7BBx1aR2c2cS3kJu9" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Coronel Oviedo - Cristian Paats Service S.A.</p>
-                            <p class="taller-address">Carlos Antonio Lopez y Jose Segundo Decoud</p>
-                            <p class="taller-phone">(0983) 597 632</p>
-                            <a href="https://maps.app.goo.gl/vwtaY2MiELUvc7bo9" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">Pedro Juan Caballero - Norte Service E.A.S</p>
-                            <p class="taller-address">Teniente Herrero N° 9097</p>
-                            <p class="taller-phone">(0981) 297 353</p>
-                            <a href="https://maps.app.goo.gl/ALMtWsBwmf855pPFA" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
-                        
-                        <div class="taller-item">
-                            <p class="taller-name">San Ignacio - Taller Sergio</p>
-                            <p class="taller-address">Ruta 1 Py Km 228</p>
-                            <p class="taller-phone">(0782) 232 511</p>
-                            <a href="https://maps.app.goo.gl/ALMtWsBwmf855pPFA" target="_blank" class="taller-link">Ver en Google Maps →</a>
-                        </div>
+                        @endforeach
                     </div>
+                    @endif
                 </div>
                 
                 <!-- Columna Derecha: Mapa de Google con Marcadores de Talleres -->
@@ -196,7 +146,57 @@
 @endsection
 
 @push('scripts')
-    <!-- Google Maps API Script -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkimkZ6DPj3I8nxIgwrQsoTL0JCFW4ljk&callback=initTalleresMap&libraries=places&v=weekly" async defer></script>
-    <script src="assets/js/map-talleres.js"></script>
+<script>
+    async function initTalleresMap() {
+        const res = await fetch('{{ url('api/ubicaciones/talleres') }}');
+        const talleres = await res.json();
+
+        const map = new google.maps.Map(document.getElementById('talleres-map'), {
+            zoom: 6,
+            center: { lat: -25.0, lng: -57.5 },
+            styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }],
+            mapTypeControl: true,
+            streetViewControl: false,
+            fullscreenControl: true
+        });
+
+        const bounds = new google.maps.LatLngBounds();
+
+        talleres.forEach((t, i) => {
+            const isOficial = t.type === 'taller_oficial';
+            const iconUrl = isOficial
+                ? 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                : 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png';
+            const tipoLabel = isOficial
+                ? '<span style="background:#cc0000;color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;">OFICIAL</span>'
+                : '<span style="background:#ff8800;color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;">AUTORIZADO</span>';
+
+            const marker = new google.maps.Marker({
+                position: t.position,
+                map: map,
+                title: t.name,
+                icon: { url: iconUrl, scaledSize: new google.maps.Size(40, 40) },
+                animation: google.maps.Animation.DROP
+            });
+
+            const mapsLink = t.maps_url
+                ? `<a href="${t.maps_url}" target="_blank" style="display:inline-block;margin-top:10px;color:#cc0000;text-decoration:none;font-weight:600;">Cómo llegar →</a>`
+                : `<a href="https://www.google.com/maps/dir/?api=1&destination=${t.position.lat},${t.position.lng}" target="_blank" style="display:inline-block;margin-top:10px;color:#cc0000;text-decoration:none;font-weight:600;">Cómo llegar →</a>`;
+
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<div style="padding:10px;max-width:280px;"><div style="margin-bottom:8px;">${tipoLabel}</div><h3 style="margin:0 0 10px;color:#cc0000;font-size:16px;font-weight:700;">${t.name}</h3><p style="margin:5px 0;font-size:14px;color:#333;"><strong>Dirección:</strong><br>${t.address}</p><p style="margin:5px 0;font-size:14px;color:#333;"><strong>Teléfono:</strong><br>${t.phone}</p>${mapsLink}</div>`
+            });
+            marker.addListener('click', () => infoWindow.open(map, marker));
+            if (i === 0) infoWindow.open(map, marker);
+            bounds.extend(t.position);
+        });
+
+        if (!bounds.isEmpty()) map.fitBounds(bounds);
+
+        const legend = document.createElement('div');
+        legend.innerHTML = `<div style="background:white;padding:15px;margin:10px;border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,0.3);font-family:Arial,sans-serif;"><h4 style="margin:0 0 10px;font-size:14px;font-weight:700;color:#333;">Talleres Honda</h4><div style="margin:5px 0;display:flex;align-items:center;gap:8px;"><img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png" style="width:20px;height:20px;"><span style="font-size:13px;color:#666;">Talleres Oficiales</span></div><div style="margin:5px 0;display:flex;align-items:center;gap:8px;"><img src="http://maps.google.com/mapfiles/ms/icons/orange-dot.png" style="width:20px;height:20px;"><span style="font-size:13px;color:#666;">Talleres Autorizados</span></div></div>`;
+        map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkimkZ6DPj3I8nxIgwrQsoTL0JCFW4ljk&callback=initTalleresMap&libraries=places&v=weekly" async defer></script>
 @endpush

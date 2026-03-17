@@ -33,6 +33,12 @@
                     <x-nav-link :href="url('admin/leads')" :active="request()->is('admin/leads*')">
                         Leads
                     </x-nav-link>
+                    <x-nav-link :href="url('admin/ubicaciones')" :active="request()->is('admin/ubicaciones*')">
+                        Ubicaciones
+                    </x-nav-link>
+                    <x-nav-link :href="url('admin/ofertas')" :active="request()->is('admin/ofertas*')">
+                        Ofertas
+                    </x-nav-link>
                     <x-nav-link :href="url('admin/settings')" :active="request()->is('admin/settings*')">
                         Configuración
                     </x-nav-link>
@@ -108,6 +114,12 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="url('admin/leads')" :active="request()->is('admin/leads*')">
                 Leads
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="url('admin/ubicaciones')" :active="request()->is('admin/ubicaciones*')">
+                Ubicaciones
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="url('admin/ofertas')" :active="request()->is('admin/ofertas*')">
+                Ofertas
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="url('admin/settings')" :active="request()->is('admin/settings*')">
                 Configuración

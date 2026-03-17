@@ -122,257 +122,79 @@
         </div>
     </section>
 
+    @php $ofertas = \App\Models\Oferta::activas()->ordenadas()->get(); @endphp
+    @if($ofertas->isNotEmpty())
     <section class="ofertas-section">
         <div class="container">
             <h2 class="section-title-dark">Ofertas y Campañas</h2>
             <div class="ofertas-grid">
+                @foreach($ofertas as $oferta)
                 <div class="oferta-card">
-                    <img src="{{ asset('assets/images/campana.jpeg') }}" alt="Ofertas y Campañas">
+                    <img src="{{ $oferta->imagenUrl() }}" alt="Oferta Honda Paraguay">
                 </div>
+                @endforeach
             </div>
         </div>
     </section>
+    @endif
 @endsection
 
 @push('scripts')
 <script>
-    function initMap() {
-        const showrooms = [
-            {
-                name: 'Casa Central Honda',
-                position: { lat: -25.280699, lng: -57.575101 },
-                address: 'Avda. Eusebio Ayala esq. Camilo Recalde',
-                phone: '(+59521) 728 5717',
-                type: 'showroom'
-            },
-            {
-                name: 'Honda España',
-                position: { lat: -25.284322, lng: -57.602539 },
-                address: 'Avda. España esq. Santa Rosa',
-                phone: '(+59521) 728 5717',
-                type: 'showroom'
-            },
-            {
-                name: 'Honda Ciudad del Este',
-                position: { lat: -25.509722, lng: -54.611944 },
-                address: 'Avda. Puente Cavalcanti c/ Abdon Palacios',
-                phone: '(+59561) 574 410',
-                type: 'showroom'
-            }
-        ];
+    async function initMap() {
+        const res = await fetch('{{ url('api/ubicaciones') }}');
+        const ubicaciones = await res.json();
 
-        const talleres = [
-            {
-                name: 'Taller Oficial Honda Asunción',
-                position: { lat: -25.280699, lng: -57.575101 },
-                address: 'Avda. Eusebio Ayala esq. Camilo Recalde',
-                phone: '(+59521) 728 5717',
-                type: 'oficial'
-            },
-            {
-                name: 'Taller Oficial Honda Ciudad del Este',
-                position: { lat: -25.509722, lng: -54.611944 },
-                address: 'Avda. Puente Cavalcanti c/ Abdon Palacios',
-                phone: '(+59561) 574 410',
-                type: 'oficial'
-            },
-            {
-                name: 'Ruschel - Encarnación',
-                position: { lat: -27.3378, lng: -55.8658 },
-                address: 'Curupayty c/ Waldino Lovera',
-                phone: '(0994) 857 840',
-                type: 'autorizado'
-            },
-            {
-                name: 'Ruschel - Hohenau',
-                position: { lat: -27.0833, lng: -55.6167 },
-                address: 'Avda Carlos A. López y Juan E. Oleary',
-                phone: '(0995) 372 600',
-                type: 'autorizado'
-            },
-            {
-                name: 'Taller Altona - Campo 8',
-                position: { lat: -25.3830025, lng: -55.6522597 },
-                address: 'Ruta PY 02, Km 218',
-                phone: '(0984) 427 419 / (0972) 915 618',
-                type: 'autorizado'
-            },
-            {
-                name: 'Motormack - Loma Plata',
-                position: { lat: -22.3833, lng: -59.8333 },
-                address: 'Avda. Central esq. Uruguay',
-                phone: '(0983) 577 527',
-                type: 'autorizado'
-            },
-            {
-                name: 'Fogasa Auto Parts S.A - Santa Rosa del Aguaray',
-                position: { lat: -23.8047, lng: -56.8503 },
-                address: 'Ruta Py 08 Km 327',
-                phone: '(0992) 225 723',
-                type: 'autorizado'
-            },
-            {
-                name: 'Auto Diesel Paraná - Katuete',
-                position: { lat: -24.1667, lng: -54.7667 },
-                address: 'Perpetuo Socorro 140801',
-                phone: '(0983) 597 632',
-                type: 'autorizado'
-            },
-            {
-                name: 'Cristian Paats Service S.A. - Coronel Oviedo',
-                position: { lat: -25.45, lng: -56.45 },
-                address: 'Carlos Antonio Lopez y Jose Segundo Decoud',
-                phone: '(0983) 597 632',
-                type: 'autorizado'
-            },
-            {
-                name: 'Norte Service E.A.S - Pedro Juan Caballero',
-                position: { lat: -22.55, lng: -55.7333 },
-                address: 'Teniente Herrero N° 9097',
-                phone: '(0981) 297 353',
-                type: 'autorizado'
-            },
-            {
-                name: 'Taller Sergio - San Ignacio',
-                position: { lat: -26.8833, lng: -57.0167 },
-                address: 'Ruta 1 Py Km 228',
-                phone: '(0782) 232 511',
-                type: 'autorizado'
-            }
-        ];
-
-        const centerPosition = { lat: -25.0, lng: -57.5 };
+        const showrooms = ubicaciones.filter(u => u.type === 'showroom');
+        const talleres  = ubicaciones.filter(u => u.type === 'taller_oficial' || u.type === 'taller_autorizado');
 
         const map = new google.maps.Map(document.getElementById('map'), {
             zoom: 6,
-            center: centerPosition,
-            styles: [
-                {
-                    featureType: 'poi',
-                    elementType: 'labels',
-                    stylers: [{ visibility: 'off' }]
-                }
-            ],
+            center: { lat: -25.0, lng: -57.5 },
+            styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }],
             mapTypeControl: true,
             streetViewControl: false,
             fullscreenControl: true
         });
 
-        showrooms.forEach((showroom) => {
+        function addMarker(item, iconUrl, labelHtml) {
             const marker = new google.maps.Marker({
-                position: showroom.position,
+                position: item.position,
                 map: map,
-                title: showroom.name,
-                icon: {
-                    url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                    scaledSize: new google.maps.Size(35, 35)
-                }
+                title: item.name,
+                icon: { url: iconUrl, scaledSize: new google.maps.Size(35, 35) }
             });
-
-            const infoContent = `
-                <div style="padding: 10px; max-width: 250px;">
-                    <div style="margin-bottom: 8px;">
-                        <span style="background: #cc0000; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700;">SHOWROOM</span>
-                    </div>
-                    <h3 style="margin: 0 0 10px 0; color: #cc0000; font-size: 16px; font-weight: 700;">
-                        ${showroom.name}
-                    </h3>
-                    <p style="margin: 5px 0; font-size: 14px; color: #333;">
-                        <strong>Dirección:</strong><br>
-                        ${showroom.address}
-                    </p>
-                    <p style="margin: 5px 0; font-size: 14px; color: #333;">
-                        <strong>Teléfono:</strong><br>
-                        ${showroom.phone}
-                    </p>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=${showroom.position.lat},${showroom.position.lng}" target="_blank" style="display: inline-block; margin-top: 10px; color: #cc0000; text-decoration: none; font-weight: 600;">
-                        Cómo llegar →
-                    </a>
-                </div>
-            `;
-
+            const mapsLink = item.maps_url
+                ? `<a href="${item.maps_url}" target="_blank" style="display:inline-block;margin-top:10px;color:#cc0000;text-decoration:none;font-weight:600;">Ver en Google Maps →</a>`
+                : `<a href="https://www.google.com/maps/dir/?api=1&destination=${item.position.lat},${item.position.lng}" target="_blank" style="display:inline-block;margin-top:10px;color:#cc0000;text-decoration:none;font-weight:600;">Cómo llegar →</a>`;
             const infoWindow = new google.maps.InfoWindow({
-                content: infoContent
+                content: `<div style="padding:10px;max-width:250px;">${labelHtml}<h3 style="margin:0 0 10px;color:#cc0000;font-size:16px;font-weight:700;">${item.name}</h3><p style="margin:5px 0;font-size:14px;color:#333;"><strong>Dirección:</strong><br>${item.address}</p><p style="margin:5px 0;font-size:14px;color:#333;"><strong>Teléfono:</strong><br>${item.phone}</p>${mapsLink}</div>`
             });
-
-            marker.addListener('click', function () {
-                infoWindow.open(map, marker);
-            });
-        });
-
-        talleres.forEach((taller) => {
-            const icon = taller.type === 'oficial'
-                ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-                : 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png';
-
-            const marker = new google.maps.Marker({
-                position: taller.position,
-                map: map,
-                title: taller.name,
-                icon: {
-                    url: icon,
-                    scaledSize: new google.maps.Size(35, 35)
-                }
-            });
-
-            const tipoLabel = taller.type === 'oficial'
-                ? '<span style="background: #0066cc; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700;">TALLER OFICIAL</span>'
-                : '<span style="background: #ff8800; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700;">TALLER AUTORIZADO</span>';
-
-            const infoContent = `
-                <div style="padding: 10px; max-width: 250px;">
-                    <div style="margin-bottom: 8px;">
-                        ${tipoLabel}
-                    </div>
-                    <h3 style="margin: 0 0 10px 0; color: #cc0000; font-size: 16px; font-weight: 700;">
-                        ${taller.name}
-                    </h3>
-                    <p style="margin: 5px 0; font-size: 14px; color: #333;">
-                        <strong>Dirección:</strong><br>
-                        ${taller.address}
-                    </p>
-                    <p style="margin: 5px 0; font-size: 14px; color: #333;">
-                        <strong>Teléfono:</strong><br>
-                        ${taller.phone}
-                    </p>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=${taller.position.lat},${taller.position.lng}" target="_blank" style="display: inline-block; margin-top: 10px; color: #cc0000; text-decoration: none; font-weight: 600;">
-                        Cómo llegar →
-                    </a>
-                </div>
-            `;
-
-            const infoWindow = new google.maps.InfoWindow({
-                content: infoContent
-            });
-
-            marker.addListener('click', function () {
-                infoWindow.open(map, marker);
-            });
-        });
+            marker.addListener('click', () => infoWindow.open(map, marker));
+            return marker;
+        }
 
         const bounds = new google.maps.LatLngBounds();
-        showrooms.forEach(showroom => bounds.extend(showroom.position));
-        talleres.forEach(taller => bounds.extend(taller.position));
-        map.fitBounds(bounds);
+
+        showrooms.forEach(u => {
+            addMarker(u, 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                '<div style="margin-bottom:8px;"><span style="background:#cc0000;color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;">SHOWROOM</span></div>');
+            bounds.extend(u.position);
+        });
+
+        talleres.forEach(u => {
+            const isOficial = u.type === 'taller_oficial';
+            addMarker(u,
+                isOficial ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png',
+                `<div style="margin-bottom:8px;"><span style="background:${isOficial ? '#0066cc' : '#ff8800'};color:white;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;">${isOficial ? 'TALLER OFICIAL' : 'TALLER AUTORIZADO'}</span></div>`
+            );
+            bounds.extend(u.position);
+        });
+
+        if (!bounds.isEmpty()) map.fitBounds(bounds);
 
         const legend = document.createElement('div');
-        legend.innerHTML = `
-            <div style="background: white; padding: 12px; margin: 10px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); font-family: Arial, sans-serif;">
-                <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: #333;">Honda Paraguay</h4>
-                <div style="margin: 5px 0; display: flex; align-items: center; gap: 8px;">
-                    <img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png" style="width: 18px; height: 18px;">
-                    <span style="font-size: 12px; color: #666;">Showrooms</span>
-                </div>
-                <div style="margin: 5px 0; display: flex; align-items: center; gap: 8px;">
-                    <img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" style="width: 18px; height: 18px;">
-                    <span style="font-size: 12px; color: #666;">Talleres Oficiales</span>
-                </div>
-                <div style="margin: 5px 0; display: flex; align-items: center; gap: 8px;">
-                    <img src="http://maps.google.com/mapfiles/ms/icons/orange-dot.png" style="width: 18px; height: 18px;">
-                    <span style="font-size: 12px; color: #666;">Talleres Autorizados</span>
-                </div>
-            </div>
-        `;
+        legend.innerHTML = `<div style="background:white;padding:12px;margin:10px;border-radius:5px;box-shadow:0 2px 6px rgba(0,0,0,0.3);font-family:Arial,sans-serif;"><h4 style="margin:0 0 10px;font-size:13px;font-weight:700;color:#333;">Honda Paraguay</h4><div style="margin:5px 0;display:flex;align-items:center;gap:8px;"><img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png" style="width:18px;height:18px;"><span style="font-size:12px;color:#666;">Showrooms</span></div><div style="margin:5px 0;display:flex;align-items:center;gap:8px;"><img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" style="width:18px;height:18px;"><span style="font-size:12px;color:#666;">Talleres Oficiales</span></div><div style="margin:5px 0;display:flex;align-items:center;gap:8px;"><img src="http://maps.google.com/mapfiles/ms/icons/orange-dot.png" style="width:18px;height:18px;"><span style="font-size:12px;color:#666;">Talleres Autorizados</span></div></div>`;
         map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
     }
 </script>
