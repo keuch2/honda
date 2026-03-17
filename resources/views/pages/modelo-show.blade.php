@@ -28,40 +28,19 @@
         z-index: 2;
         flex: 1;
         width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 60px 30px;
-        display: grid;
-        grid-template-columns: 1fr 420px;
-        gap: 50px;
-        align-items: center;
-    }
-    .landing-hero-info {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    .landing-hero-info h1 {
-        font-size: 56px;
-        font-weight: 900;
-        color: #fff;
-        text-transform: uppercase;
-        line-height: 1.05;
-        margin-bottom: 14px;
-        text-shadow: 0 2px 12px rgba(0,0,0,0.4);
-    }
-    .landing-hero-info .lp-subtitle {
-        font-size: 20px;
-        color: rgba(255,255,255,0.92);
-        line-height: 1.5;
-        margin-bottom: 0;
-        text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+        align-items: center;
+        justify-content: flex-end;
+        padding: 40px 80px;
     }
     .landing-hero-form-card {
         background: #fff;
         border-radius: 14px;
         padding: 36px 32px;
         box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+        width: 420px;
+        max-width: 100%;
+        flex-shrink: 0;
     }
     .landing-hero-form-card h2 {
         font-size: 22px;
@@ -150,18 +129,13 @@
     .lp-error-msg p { margin: 3px 0; }
     @media (max-width: 900px) {
         .landing-hero-layout {
-            grid-template-columns: 1fr;
-            gap: 28px;
-            padding: 40px 20px 36px;
-            min-height: auto;
+            justify-content: center;
+            padding: 30px 20px;
         }
-        .landing-hero-info h1 { font-size: 38px; }
-        .landing-hero-info .lp-subtitle { font-size: 17px; }
-        .landing-hero-form-card { padding: 28px 22px; }
+        .landing-hero-form-card { width: 100%; max-width: 480px; padding: 28px 22px; }
     }
     @media (max-width: 480px) {
-        .landing-hero-layout { padding: 30px 16px 28px; }
-        .landing-hero-info h1 { font-size: 32px; }
+        .landing-hero-layout { padding: 24px 16px; }
         .landing-hero-form-card { padding: 22px 18px; border-radius: 10px; }
         .landing-hero-form-card h2 { font-size: 19px; }
     }
@@ -176,13 +150,6 @@
         @if($isLanding ?? false)
             {{-- Landing: title on left + inline cotizar form on right --}}
             <div class="landing-hero-layout">
-                <div class="landing-hero-info">
-                    <h1>{{ strtoupper($modelo->nombre) }}{{ $modelo->anio ? ' ' . $modelo->anio : '' }}</h1>
-                    @if($modelo->subtitulo)
-                        <p class="lp-subtitle">{{ $modelo->subtitulo }}</p>
-                    @endif
-                </div>
-
                 <div class="landing-hero-form-card">
                     <h2>{{ $landingPage->form_titulo ?? 'Solicitá tu Cotización' }}</h2>
                     <p class="lp-form-subtitle">{{ $landingPage->form_subtitulo ?? 'Completá el formulario y un asesor se pondrá en contacto.' }}</p>
