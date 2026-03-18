@@ -14,7 +14,7 @@ SERVER_USER="root"
 SERVER_HOST="168.181.184.99"
 SERVER_PORT="5519"
 PROJECT_DIR="/home/honda/public_html"
-PHP="/opt/php8-3/bin/php"
+PHP="/opt/php8-3/bin/php-cli"
 
 echo -e "${YELLOW}Honda Paraguay - Deploy a produccion${NC}"
 echo "======================================"
@@ -46,7 +46,7 @@ ssh -p${SERVER_PORT} ${SERVER_USER}@${SERVER_HOST} bash -s << REMOTE_COMMANDS
     git pull origin main
 
     echo ">> Instalando dependencias..."
-    ${PHP} /usr/local/bin/composer install --no-dev --optimize-autoloader 2>/dev/null || echo "composer install skipped"
+    ${PHP} /usr/local/bin/composer install --no-dev --optimize-autoloader || echo "composer install skipped"
 
     echo ">> Ejecutando migraciones..."
     ${PHP} artisan migrate --force
