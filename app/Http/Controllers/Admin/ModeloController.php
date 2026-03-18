@@ -44,7 +44,7 @@ class ModeloController extends Controller
             'orden' => 'nullable|integer',
             'hero_image' => 'nullable|image|max:5120',
             'card_image' => 'nullable|image|max:5120',
-            'ficha_tecnica_pdf' => 'nullable|file|mimes:pdf|max:15360',
+            'ficha_tecnica_pdf' => 'nullable|file|mimes:pdf|max:51200',
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);
@@ -104,7 +104,7 @@ class ModeloController extends Controller
             'orden' => 'nullable|integer',
             'hero_image' => 'nullable|image|max:5120',
             'card_image' => 'nullable|image|max:5120',
-            'ficha_tecnica_pdf' => 'nullable|file|mimes:pdf|max:15360',
+            'ficha_tecnica_pdf' => 'nullable|file|mimes:pdf|max:51200',
         ]);
 
         $data['is_active'] = $request->boolean('is_active', true);

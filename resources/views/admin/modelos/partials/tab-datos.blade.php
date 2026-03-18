@@ -3,13 +3,13 @@
       @submit="
         error = '';
         const maxImg = 5 * 1024 * 1024;
-        const maxPdf = 15 * 1024 * 1024;
+        const maxPdf = 50 * 1024 * 1024;
         const heroFile = $refs.hero_image.files[0];
         const cardFile = $refs.card_image.files[0];
         const pdfFile = $refs.ficha_pdf.files[0];
         if (heroFile && heroFile.size > maxImg) { error = 'La imagen Hero no debe superar 5 MB.'; $event.preventDefault(); return; }
         if (cardFile && cardFile.size > maxImg) { error = 'La imagen Card no debe superar 5 MB.'; $event.preventDefault(); return; }
-        if (pdfFile && pdfFile.size > maxPdf) { error = 'La ficha técnica PDF no debe superar 15 MB.'; $event.preventDefault(); return; }
+        if (pdfFile && pdfFile.size > maxPdf) { error = 'La ficha técnica PDF no debe superar 50 MB.'; $event.preventDefault(); return; }
         uploading = true;
       ">
     @csrf
@@ -77,7 +77,7 @@
                     <p class="text-xs text-gray-500 mt-1">Actual: <a href="{{ $modelo->fichaTecnicaUrl() }}" target="_blank" class="text-blue-600 hover:underline">{{ basename($modelo->ficha_tecnica_pdf) }}</a></p>
                 @endif
                 <input type="file" name="ficha_tecnica_pdf" id="ficha_tecnica_pdf" x-ref="ficha_pdf" accept=".pdf" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                <p class="text-xs text-gray-400 mt-1">Máx. 15 MB</p>
+                <p class="text-xs text-gray-400 mt-1">Máx. 50 MB</p>
             </div>
         </div>
 
