@@ -1,6 +1,24 @@
-<form action="{{ route('admin.modelos.update', $modelo) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin.modelos.update', $modelo) }}" method="POST" enctype="multipart/form-data"
+      x-data="{ uploading: false, error: '' }"
+      @submit="
+        error = '';
+        const maxImg = 5 * 1024 * 1024;
+        const maxPdf = 15 * 1024 * 1024;
+        const heroFile = $refs.hero_image.files[0];
+        const cardFile = $refs.card_image.files[0];
+        const pdfFile = $refs.ficha_pdf.files[0];
+        if (heroFile && heroFile.size > maxImg) { error = 'La imagen Hero no debe superar 5 MB.'; $event.preventDefault(); return; }
+        if (cardFile && cardFile.size > maxImg) { error = 'La imagen Card no debe superar 5 MB.'; $event.preventDefault(); return; }
+        if (pdfFile && pdfFile.size > maxPdf) { error = 'La ficha técnica PDF no debe superar 15 MB.'; $event.preventDefault(); return; }
+        uploading = true;
+      ">
     @csrf
     @method('PUT')
+
+    <div x-show="error" x-cloak class="mb-4 rounded-md bg-red-50 p-4">
+        <p class="text-sm text-red-700" x-text="error"></p>
+    </div>
+
     <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -42,21 +60,24 @@
                 @if($modelo->hero_image)
                     <p class="text-xs text-gray-500 mt-1">Actual: {{ basename($modelo->hero_image) }}</p>
                 @endif
-                <input type="file" name="hero_image" id="hero_image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <input type="file" name="hero_image" id="hero_image" x-ref="hero_image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <p class="text-xs text-gray-400 mt-1">Máx. 5 MB</p>
             </div>
             <div>
                 <label for="card_image" class="block text-sm font-medium text-gray-700">Imagen Card (listado)</label>
                 @if($modelo->card_image)
                     <p class="text-xs text-gray-500 mt-1">Actual: {{ basename($modelo->card_image) }}</p>
                 @endif
-                <input type="file" name="card_image" id="card_image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <input type="file" name="card_image" id="card_image" x-ref="card_image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <p class="text-xs text-gray-400 mt-1">Máx. 5 MB</p>
             </div>
             <div>
                 <label for="ficha_tecnica_pdf" class="block text-sm font-medium text-gray-700">Ficha Técnica (PDF)</label>
                 @if($modelo->ficha_tecnica_pdf)
                     <p class="text-xs text-gray-500 mt-1">Actual: <a href="{{ $modelo->fichaTecnicaUrl() }}" target="_blank" class="text-blue-600 hover:underline">{{ basename($modelo->ficha_tecnica_pdf) }}</a></p>
                 @endif
-                <input type="file" name="ficha_tecnica_pdf" id="ficha_tecnica_pdf" accept=".pdf" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <input type="file" name="ficha_tecnica_pdf" id="ficha_tecnica_pdf" x-ref="ficha_pdf" accept=".pdf" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                <p class="text-xs text-gray-400 mt-1">Máx. 15 MB</p>
             </div>
         </div>
 
@@ -94,8 +115,11 @@
         </div>
 
         <div class="flex justify-end">
-            <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700">
-                Guardar Cambios
+            <button type="submit" :disabled="uploading" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 disabled:opacity-50 disabled:cursor-wait">
+                <template x-if="uploading">
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                </template>
+                <span x-text="uploading ? 'Subiendo...' : 'Guardar Cambios'"></span>
             </button>
         </div>
     </div>
