@@ -56,7 +56,7 @@ class NoticiaController extends Controller
             $validated['imagen_destacada'] = 'storage/' . $path;
         }
 
-        $validated['publicado'] = $request->boolean('publicado', true);
+        $validated['publicado'] = $request->boolean('publicado');
         $validated['orden'] = $request->input('orden', 0);
         $validated['contenido_html'] = $request->input('contenido');
 
@@ -102,7 +102,7 @@ class NoticiaController extends Controller
             $validated['imagen_destacada'] = 'storage/' . $path;
         }
 
-        $validated['publicado'] = $request->boolean('publicado', true);
+        $validated['publicado'] = $request->boolean('publicado');
         $validated['orden'] = $request->input('orden', 0);
         $validated['contenido_html'] = $request->input('contenido');
 

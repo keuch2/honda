@@ -163,8 +163,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Sync Quill content to hidden input on form submit
-    const form = document.querySelector('form');
     const hiddenInput = document.getElementById('contenido-hidden');
+    const form = hiddenInput.closest('form');
     form.addEventListener('submit', function() {
         hiddenInput.value = quill.root.innerHTML;
     });

@@ -21,7 +21,6 @@ class Noticia extends Model
     ];
 
     protected $casts = [
-        'contenido' => 'array',
         'fecha' => 'date',
         'publicado' => 'boolean'
     ];
