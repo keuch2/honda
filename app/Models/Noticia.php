@@ -49,7 +49,7 @@ class Noticia extends Model
 
     public function scopeOrdenadas($query)
     {
-        return $query->orderBy('orden', 'desc')->orderBy('fecha', 'desc');
+        return $query->orderBy('fecha', 'desc')->orderBy('orden', 'desc');
     }
 
     /**
