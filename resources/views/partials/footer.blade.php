@@ -93,7 +93,9 @@
                 <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
             @endif
             @foreach($formTestdriveFields ?? [] as $field)
-                @if($field['type'] === 'select' && $field['name'] === 'modelo')
+                @if(($field['type'] ?? '') === 'hidden')
+                    <input type="hidden" name="{{ $field['name'] }}" value="{{ $field['value'] ?? '' }}">
+                @elseif($field['type'] === 'select' && $field['name'] === 'modelo')
                     @if(isset($currentModelo))
                         <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
                         <div class="form-group">
@@ -138,7 +140,9 @@
                 <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
             @endif
             @foreach($formCotizarFields ?? [] as $field)
-                @if($field['type'] === 'select' && $field['name'] === 'modelo')
+                @if(($field['type'] ?? '') === 'hidden')
+                    <input type="hidden" name="{{ $field['name'] }}" value="{{ $field['value'] ?? '' }}">
+                @elseif($field['type'] === 'select' && $field['name'] === 'modelo')
                     @if(isset($currentModelo))
                         <input type="hidden" name="modelo" value="{{ $currentModelo->nombre }}">
                         <div class="form-group">

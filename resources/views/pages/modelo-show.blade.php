@@ -183,7 +183,9 @@
 
                         <div class="lp-form-grid">
                         @foreach($formCotizarFields ?? [] as $field)
-                            @if($field['type'] === 'select' && $field['name'] === 'modelo')
+                            @if(($field['type'] ?? '') === 'hidden')
+                                <input type="hidden" name="{{ $field['name'] }}" value="{{ $field['value'] ?? '' }}">
+                            @elseif($field['type'] === 'select' && $field['name'] === 'modelo')
                                 <input type="hidden" name="modelo" value="{{ $modelo->nombre }}">
                                 <div class="form-group full-width">
                                     <label>{{ $field['label'] }}{{ !empty($field['required']) ? ' *' : '' }}</label>

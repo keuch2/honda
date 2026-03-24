@@ -175,6 +175,7 @@
                                                     <th class="px-2 py-1">Nombre campo</th>
                                                     <th class="px-2 py-1">Etiqueta</th>
                                                     <th class="px-2 py-1">Tipo</th>
+                                                    <th class="px-2 py-1">Valor (oculto)</th>
                                                     <th class="px-2 py-1 w-20 text-center">Requerido</th>
                                                     <th class="px-2 py-1 w-24 text-center">Orden</th>
                                                     <th class="px-2 py-1 w-10"></th>
@@ -198,7 +199,16 @@
                                                                 <option value="number">Número</option>
                                                                 <option value="textarea">Área de texto</option>
                                                                 <option value="select">Select (Modelos)</option>
+                                                                <option value="hidden">Oculto</option>
                                                             </select>
+                                                        </td>
+                                                        <td class="px-2 py-2">
+                                                            <template x-if="field.type === 'hidden'">
+                                                                <input type="text" x-model="field.value" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Valor fijo">
+                                                            </template>
+                                                            <template x-if="field.type !== 'hidden'">
+                                                                <span class="text-xs text-gray-400">-</span>
+                                                            </template>
                                                         </td>
                                                         <td class="px-2 py-2 text-center">
                                                             <input type="checkbox" x-model="field.required" class="h-4 w-4 rounded border-gray-300 text-indigo-600">
@@ -403,7 +413,7 @@ document.addEventListener('alpine:init', () => {
             [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
         },
         addField(key) {
-            this.forms[key].push({ name: '', label: '', type: 'text', required: false, _uid: ++_uidCounter });
+            this.forms[key].push({ name: '', label: '', type: 'text', required: false, value: '', _uid: ++_uidCounter });
         },
         removeField(key, idx) {
             if (confirm('¿Eliminar este campo?')) {
