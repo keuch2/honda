@@ -186,4 +186,9 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::post('settings/emails', [AdminSettingsController::class, 'updateEmails'])->name('settings.emails');
     Route::post('settings/forms', [AdminSettingsController::class, 'updateForms'])->name('settings.forms');
     Route::post('settings/whatsapp', [AdminSettingsController::class, 'updateWhatsapp'])->name('settings.whatsapp');
+    Route::post('settings/integrations', [AdminSettingsController::class, 'updateIntegrations'])->name('settings.integrations');
+
+    // Planify logs
+    Route::get('planify-logs', [App\Http\Controllers\Admin\PlanifyLogController::class, 'index'])->name('planify-logs.index');
+    Route::post('planify-logs/{planifyLog}/retry', [App\Http\Controllers\Admin\PlanifyLogController::class, 'retry'])->name('planify-logs.retry');
 });

@@ -27,6 +27,7 @@
                         <button @click="tab = 'emails'" :class="tab === 'emails' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Emails</button>
                         <button @click="tab = 'forms'" :class="tab === 'forms' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Formularios</button>
                         <button @click="tab = 'whatsapp'" :class="tab === 'whatsapp' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">WhatsApp</button>
+                        <button @click="tab = 'integrations'" :class="tab === 'integrations' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Integraciones</button>
                     </nav>
                 </div>
 
@@ -258,6 +259,97 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- Integraciones -->
+                @php
+                    $planifyMapping = json_decode($s('planify_field_mapping', '{"name":"nombre","surname":"apellido","phone":"telefono","model_name":"modelo","branch_name":"sucursal"}'), true) ?: [];
+                    $allFormFields = collect();
+                    foreach (['testdrive' => $formTestdrive, 'cotizar' => $formCotizar, 'landing' => $formLanding] as $fKey => $fJson) {
+                        $fields = is_string($fJson) ? json_decode($fJson, true) : $fJson;
+                        if (is_array($fields)) {
+                            foreach ($fields as $f) {
+                                if (!empty($f['name'])) {
+                                    $allFormFields->push($f['name']);
+                                }
+                            }
+                        }
+                    }
+                    $allFormFields = $allFormFields->unique()->sort()->values();
+                @endphp
+                <div x-show="tab === 'integrations'" x-data="planifyIntegration()">
+                    <form action="{{ route('admin.settings.integrations') }}" method="POST" @submit="serializeMapping()">
+                        @csrf
+                        <input type="hidden" name="planify_field_mapping" :value="mappingJson">
+
+                        <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900">Integración Planify</h3>
+                                <p class="text-sm text-gray-500">Configurá el envío automático de leads a la API de Planify. Los campos se mapean a los campos configurados en la pestaña Formularios.</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">URL de la API</label>
+                                <input type="text" name="planify_api_url" value="{{ $s('planify_api_url', 'https://planifypy.herokuapp.com/callbacks/create') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm font-mono text-xs" placeholder="https://planifypy.herokuapp.com/callbacks/create">
+                            </div>
+
+                            <div class="space-y-3">
+                                <h4 class="text-sm font-semibold text-gray-800">Activar por formulario</h4>
+                                <div class="flex flex-wrap gap-6">
+                                    <label class="inline-flex items-center gap-2">
+                                        <input type="checkbox" name="planify_enabled_testdrive" value="1" {{ $s('planify_enabled_testdrive') == '1' ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600">
+                                        <span class="text-sm text-gray-700">Test Drive</span>
+                                    </label>
+                                    <label class="inline-flex items-center gap-2">
+                                        <input type="checkbox" name="planify_enabled_cotizar" value="1" {{ $s('planify_enabled_cotizar') == '1' ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600">
+                                        <span class="text-sm text-gray-700">Cotizar</span>
+                                    </label>
+                                    <label class="inline-flex items-center gap-2">
+                                        <input type="checkbox" name="planify_enabled_landing" value="1" {{ $s('planify_enabled_landing') == '1' ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600">
+                                        <span class="text-sm text-gray-700">Landing Pages</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h4 class="text-sm font-semibold text-gray-800">Mapeo de campos</h4>
+                                <p class="text-xs text-gray-500">Relacioná cada campo de Planify con el campo correspondiente de tus formularios. El campo <strong>source</strong> se asigna automáticamente: <em>"Web Form"</em> para Test Drive/Cotizar, <em>"Google Ads"</em> para Landing Pages.</p>
+
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full text-sm">
+                                        <thead>
+                                            <tr class="text-left text-xs text-gray-500 uppercase tracking-wider">
+                                                <th class="px-3 py-2">Campo Planify</th>
+                                                <th class="px-3 py-2">Descripción</th>
+                                                <th class="px-3 py-2">Campo del formulario</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template x-for="field in planifyFields" :key="field.key">
+                                                <tr class="border-b border-gray-100">
+                                                    <td class="px-3 py-2 font-mono text-xs font-semibold text-gray-800" x-text="field.key"></td>
+                                                    <td class="px-3 py-2 text-gray-500 text-xs" x-text="field.desc"></td>
+                                                    <td class="px-3 py-2">
+                                                        <select x-model="mapping[field.key]" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
+                                                            <option value="">-- No mapear --</option>
+                                                            <template x-for="opt in formFieldOptions" :key="opt">
+                                                                <option :value="opt" x-text="opt" :selected="mapping[field.key] === opt"></option>
+                                                            </template>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 border-t">
+                                <a href="{{ route('admin.planify-logs.index') }}" class="text-sm text-indigo-600 hover:text-indigo-800">Ver historial de envíos</a>
+                                <button type="submit" class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 font-semibold uppercase tracking-widest">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -269,6 +361,10 @@
         testdrive: {!! $formTestdrive !!},
         cotizar: {!! $formCotizar !!},
         landing: {!! $formLanding !!}
+    };
+    window.__planifyData = {
+        mapping: @json($planifyMapping),
+        formFields: @json($allFormFields)
     };
 </script>
 <script>
@@ -313,6 +409,30 @@ document.addEventListener('alpine:init', () => {
             this.serialized.testdrive = JSON.stringify(clean(this.forms.testdrive));
             this.serialized.cotizar = JSON.stringify(clean(this.forms.cotizar));
             this.serialized.landing = JSON.stringify(clean(this.forms.landing));
+        }
+    }));
+});
+</script>
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('planifyIntegration', () => ({
+        mapping: {},
+        mappingJson: '{}',
+        formFieldOptions: [],
+        planifyFields: [
+            { key: 'name', desc: 'Nombre del contacto' },
+            { key: 'surname', desc: 'Apellido del contacto' },
+            { key: 'phone', desc: 'Teléfono del contacto' },
+            { key: 'model_name', desc: 'Modelo de vehículo consultado' },
+            { key: 'branch_name', desc: 'Sucursal / punto de venta' },
+        ],
+        init() {
+            const data = window.__planifyData || {};
+            this.mapping = data.mapping || { name: 'nombre', surname: 'apellido', phone: 'telefono', model_name: 'modelo', branch_name: 'sucursal' };
+            this.formFieldOptions = data.formFields || [];
+        },
+        serializeMapping() {
+            this.mappingJson = JSON.stringify(this.mapping);
         }
     }));
 });

@@ -6,6 +6,7 @@ use App\Models\Lead;
 use App\Models\LandingPage;
 use App\Models\Modelo;
 use App\Models\SiteSetting;
+use App\Services\PlanifyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -109,6 +110,8 @@ class ModeloPageController extends Controller
             }
         }
 
+        PlanifyService::sendLead($lead, 'landing', $request->all());
+
         return back()->with('success', '¡Gracias! Un asesor se pondrá en contacto contigo a la brevedad.');
     }
 
@@ -125,7 +128,7 @@ class ModeloPageController extends Controller
 
         $modelo = Modelo::where('nombre', $data['modelo'])->first();
 
-        Lead::create([
+        $lead = Lead::create([
             'landing_page_id' => $request->input('landing_page_id'),
             'modelo_id' => $modelo?->id,
             'nombre' => $data['nombre'],
@@ -155,6 +158,9 @@ class ModeloPageController extends Controller
             }
         }
 
+        $fuente = $request->input('landing_page_id') ? 'landing-testdrive' : 'testdrive';
+        PlanifyService::sendLead($lead, $fuente, $request->all());
+
         return response()->json(['success' => true, 'message' => '¡Solicitud enviada! Te contactaremos pronto.']);
     }
 
@@ -171,7 +177,7 @@ class ModeloPageController extends Controller
 
         $modelo = Modelo::where('nombre', $data['modelo'])->first();
 
-        Lead::create([
+        $lead = Lead::create([
             'landing_page_id' => $request->input('landing_page_id'),
             'modelo_id' => $modelo?->id,
             'nombre' => $data['nombre'],
@@ -200,6 +206,9 @@ class ModeloPageController extends Controller
                 \Log::error('Error enviando email cotizar: ' . $e->getMessage());
             }
         }
+
+        $fuente = $request->input('landing_page_id') ? 'landing-cotizar' : 'cotizar';
+        PlanifyService::sendLead($lead, $fuente, $request->all());
 
         return response()->json(['success' => true, 'message' => '¡Solicitud enviada! Te contactaremos pronto.']);
     }

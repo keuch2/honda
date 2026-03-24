@@ -126,6 +126,52 @@ class SettingsController extends Controller
             ->with('status', 'Configuración de formularios actualizada.');
     }
 
+    public function updateIntegrations(Request $request): RedirectResponse
+    {
+        $toggles = [
+            'planify_enabled_testdrive' => ['label' => 'Planify activo para Test Drive', 'type' => 'boolean'],
+            'planify_enabled_cotizar' => ['label' => 'Planify activo para Cotizar', 'type' => 'boolean'],
+            'planify_enabled_landing' => ['label' => 'Planify activo para Landing Pages', 'type' => 'boolean'],
+        ];
+
+        foreach ($toggles as $key => $meta) {
+            SiteSetting::updateOrCreate(
+                ['key' => $key],
+                [
+                    'group' => 'integrations',
+                    'value' => $request->has($key) ? '1' : '0',
+                    'type' => $meta['type'],
+                    'label' => $meta['label'],
+                ]
+            );
+        }
+
+        SiteSetting::updateOrCreate(
+            ['key' => 'planify_api_url'],
+            [
+                'group' => 'integrations',
+                'value' => $request->input('planify_api_url', 'https://planifypy.herokuapp.com/callbacks/create'),
+                'type' => 'text',
+                'label' => 'Planify API URL',
+            ]
+        );
+
+        SiteSetting::updateOrCreate(
+            ['key' => 'planify_field_mapping'],
+            [
+                'group' => 'integrations',
+                'value' => $request->input('planify_field_mapping', '{}'),
+                'type' => 'json',
+                'label' => 'Planify Field Mapping',
+            ]
+        );
+
+        SiteSetting::clearGroupCache('integrations');
+
+        return redirect()->route('admin.settings.index', ['tab' => 'integrations'])
+            ->with('status', 'Configuración de integraciones actualizada.');
+    }
+
     public function updateWhatsapp(Request $request): RedirectResponse
     {
         SiteSetting::updateOrCreate(

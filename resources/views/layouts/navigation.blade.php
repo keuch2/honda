@@ -34,7 +34,7 @@
                     {{-- Marketing --}}
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md {{ request()->is('admin/landing-pages*','admin/leads*','admin/ofertas*') ? 'text-gray-900 border-b-2 border-indigo-500' : 'text-gray-500 hover:text-gray-700' }} transition">
+                            <button class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md {{ request()->is('admin/landing-pages*','admin/leads*','admin/ofertas*','admin/planify-logs*') ? 'text-gray-900 border-b-2 border-indigo-500' : 'text-gray-500 hover:text-gray-700' }} transition">
                                 Marketing
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
@@ -43,6 +43,7 @@
                             <x-dropdown-link :href="url('admin/landing-pages')" :active="request()->is('admin/landing-pages*')">Landing Pages</x-dropdown-link>
                             <x-dropdown-link :href="url('admin/leads')" :active="request()->is('admin/leads*')">Leads</x-dropdown-link>
                             <x-dropdown-link :href="url('admin/ofertas')" :active="request()->is('admin/ofertas*')">Ofertas</x-dropdown-link>
+                            <x-dropdown-link :href="url('admin/planify-logs')" :active="request()->is('admin/planify-logs*')">Planify Logs</x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
 
@@ -141,6 +142,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="url('admin/ofertas')" :active="request()->is('admin/ofertas*')">
                 Ofertas
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="url('admin/planify-logs')" :active="request()->is('admin/planify-logs*')">
+                Planify Logs
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="url('admin/settings?tab=forms')" :active="request()->is('admin/settings*') && request('tab') === 'forms'">
                 Formularios
