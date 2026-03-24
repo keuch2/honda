@@ -16,7 +16,7 @@ class PlanifyService
             return;
         }
 
-        $mapping = static::getFieldMapping();
+        $mapping = static::getFieldMapping($formType);
         $apiUrl = SiteSetting::get('planify_api_url', 'https://planifypy.herokuapp.com/callbacks/create');
 
         $source = in_array($formType, ['landing', 'landing-testdrive', 'landing-cotizar'])
@@ -99,9 +99,14 @@ class PlanifyService
         return (bool) SiteSetting::get("planify_enabled_{$normalizedType}", false);
     }
 
-    public static function getFieldMapping(): array
+    public static function getFieldMapping(string $formType): array
     {
-        $json = SiteSetting::get('planify_field_mapping', '{}');
+        $normalizedType = match ($formType) {
+            'landing-testdrive', 'landing-cotizar', 'landing' => 'landing',
+            default => $formType,
+        };
+
+        $json = SiteSetting::get("planify_mapping_{$normalizedType}", '{}');
         $mapping = is_string($json) ? json_decode($json, true) : $json;
 
         return $mapping ?: [
@@ -109,7 +114,7 @@ class PlanifyService
             'surname' => 'apellido',
             'phone' => 'telefono',
             'model_name' => 'modelo',
-            'branch_name' => 'sucursal',
+            'branch_name' => '',
         ];
     }
 }

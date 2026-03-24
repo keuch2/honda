@@ -156,15 +156,23 @@ class SettingsController extends Controller
             ]
         );
 
-        SiteSetting::updateOrCreate(
-            ['key' => 'planify_field_mapping'],
-            [
-                'group' => 'integrations',
-                'value' => $request->input('planify_field_mapping', '{}'),
-                'type' => 'json',
-                'label' => 'Planify Field Mapping',
-            ]
-        );
+        $mappings = [
+            'planify_mapping_testdrive' => ['label' => 'Planify Mapping Test Drive', 'type' => 'json'],
+            'planify_mapping_cotizar' => ['label' => 'Planify Mapping Cotizar', 'type' => 'json'],
+            'planify_mapping_landing' => ['label' => 'Planify Mapping Landing', 'type' => 'json'],
+        ];
+
+        foreach ($mappings as $key => $meta) {
+            SiteSetting::updateOrCreate(
+                ['key' => $key],
+                [
+                    'group' => 'integrations',
+                    'value' => $request->input($key, '{}'),
+                    'type' => $meta['type'],
+                    'label' => $meta['label'],
+                ]
+            );
+        }
 
         SiteSetting::clearGroupCache('integrations');
 

@@ -262,29 +262,37 @@
 
                 <!-- Integraciones -->
                 @php
-                    $planifyMapping = json_decode($s('planify_field_mapping', '{"name":"nombre","surname":"apellido","phone":"telefono","model_name":"modelo","branch_name":"sucursal"}'), true) ?: [];
-                    $allFormFields = collect();
+                    $defaultMapping = '{"name":"nombre","surname":"apellido","phone":"telefono","model_name":"modelo","branch_name":""}';
+                    $planifyMappingTestdrive = json_decode($s('planify_mapping_testdrive', $defaultMapping), true) ?: [];
+                    $planifyMappingCotizar = json_decode($s('planify_mapping_cotizar', $defaultMapping), true) ?: [];
+                    $planifyMappingLanding = json_decode($s('planify_mapping_landing', $defaultMapping), true) ?: [];
+
+                    $formFieldsByType = [];
                     foreach (['testdrive' => $formTestdrive, 'cotizar' => $formCotizar, 'landing' => $formLanding] as $fKey => $fJson) {
                         $fields = is_string($fJson) ? json_decode($fJson, true) : $fJson;
+                        $names = [];
                         if (is_array($fields)) {
                             foreach ($fields as $f) {
                                 if (!empty($f['name'])) {
-                                    $allFormFields->push($f['name']);
+                                    $names[] = $f['name'];
                                 }
                             }
                         }
+                        sort($names);
+                        $formFieldsByType[$fKey] = $names;
                     }
-                    $allFormFields = $allFormFields->unique()->sort()->values();
                 @endphp
                 <div x-show="tab === 'integrations'" x-data="planifyIntegration()">
-                    <form action="{{ route('admin.settings.integrations') }}" method="POST" @submit="serializeMapping()">
+                    <form action="{{ route('admin.settings.integrations') }}" method="POST" @submit="serializeMappings()">
                         @csrf
-                        <input type="hidden" name="planify_field_mapping" :value="mappingJson">
+                        <input type="hidden" name="planify_mapping_testdrive" :value="mappingJson.testdrive">
+                        <input type="hidden" name="planify_mapping_cotizar" :value="mappingJson.cotizar">
+                        <input type="hidden" name="planify_mapping_landing" :value="mappingJson.landing">
 
                         <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
                             <div>
                                 <h3 class="text-lg font-medium text-gray-900">Integración Planify</h3>
-                                <p class="text-sm text-gray-500">Configurá el envío automático de leads a la API de Planify. Los campos se mapean a los campos configurados en la pestaña Formularios.</p>
+                                <p class="text-sm text-gray-500">Configurá el envío automático de leads a la API de Planify. Cada formulario tiene su propio mapeo de campos. El campo <strong>source</strong> se asigna automáticamente: <em>"Web Form"</em> para Test Drive/Cotizar, <em>"Google Ads"</em> para Landing Pages.</p>
                             </div>
 
                             <div>
@@ -292,56 +300,45 @@
                                 <input type="text" name="planify_api_url" value="{{ $s('planify_api_url', 'https://planifypy.herokuapp.com/callbacks/create') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm font-mono text-xs" placeholder="https://planifypy.herokuapp.com/callbacks/create">
                             </div>
 
-                            <div class="space-y-3">
-                                <h4 class="text-sm font-semibold text-gray-800">Activar por formulario</h4>
-                                <div class="flex flex-wrap gap-6">
-                                    <label class="inline-flex items-center gap-2">
-                                        <input type="checkbox" name="planify_enabled_testdrive" value="1" {{ $s('planify_enabled_testdrive') == '1' ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600">
-                                        <span class="text-sm text-gray-700">Test Drive</span>
-                                    </label>
-                                    <label class="inline-flex items-center gap-2">
-                                        <input type="checkbox" name="planify_enabled_cotizar" value="1" {{ $s('planify_enabled_cotizar') == '1' ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600">
-                                        <span class="text-sm text-gray-700">Cotizar</span>
-                                    </label>
-                                    <label class="inline-flex items-center gap-2">
-                                        <input type="checkbox" name="planify_enabled_landing" value="1" {{ $s('planify_enabled_landing') == '1' ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600">
-                                        <span class="text-sm text-gray-700">Landing Pages</span>
-                                    </label>
-                                </div>
-                            </div>
+                            <template x-for="section in sections" :key="section.key">
+                                <div class="space-y-3 border rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <h4 class="text-sm font-semibold text-gray-800" x-text="section.title"></h4>
+                                        <label class="inline-flex items-center gap-2">
+                                            <input type="checkbox" :name="'planify_enabled_' + section.key" value="1" :checked="enabled[section.key]" class="h-4 w-4 rounded border-gray-300 text-indigo-600">
+                                            <span class="text-sm text-gray-700">Activar envío a Planify</span>
+                                        </label>
+                                    </div>
 
-                            <div class="space-y-3">
-                                <h4 class="text-sm font-semibold text-gray-800">Mapeo de campos</h4>
-                                <p class="text-xs text-gray-500">Relacioná cada campo de Planify con el campo correspondiente de tus formularios. El campo <strong>source</strong> se asigna automáticamente: <em>"Web Form"</em> para Test Drive/Cotizar, <em>"Google Ads"</em> para Landing Pages.</p>
-
-                                <div class="overflow-x-auto">
-                                    <table class="min-w-full text-sm">
-                                        <thead>
-                                            <tr class="text-left text-xs text-gray-500 uppercase tracking-wider">
-                                                <th class="px-3 py-2">Campo Planify</th>
-                                                <th class="px-3 py-2">Descripción</th>
-                                                <th class="px-3 py-2">Campo del formulario</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <template x-for="field in planifyFields" :key="field.key">
-                                                <tr class="border-b border-gray-100">
-                                                    <td class="px-3 py-2 font-mono text-xs font-semibold text-gray-800" x-text="field.key"></td>
-                                                    <td class="px-3 py-2 text-gray-500 text-xs" x-text="field.desc"></td>
-                                                    <td class="px-3 py-2">
-                                                        <select x-model="mapping[field.key]" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
-                                                            <option value="">-- No mapear --</option>
-                                                            <template x-for="opt in formFieldOptions" :key="opt">
-                                                                <option :value="opt" x-text="opt" :selected="mapping[field.key] === opt"></option>
-                                                            </template>
-                                                        </select>
-                                                    </td>
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full text-sm">
+                                            <thead>
+                                                <tr class="text-left text-xs text-gray-500 uppercase tracking-wider">
+                                                    <th class="px-3 py-2 w-36">Campo Planify</th>
+                                                    <th class="px-3 py-2">Descripción</th>
+                                                    <th class="px-3 py-2 w-48">Campo del formulario</th>
                                                 </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                <template x-for="field in planifyFields" :key="field.key">
+                                                    <tr class="border-b border-gray-100">
+                                                        <td class="px-3 py-2 font-mono text-xs font-semibold text-gray-800" x-text="field.key"></td>
+                                                        <td class="px-3 py-2 text-gray-500 text-xs" x-text="field.desc"></td>
+                                                        <td class="px-3 py-2">
+                                                            <select x-model="mappings[section.key][field.key]" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
+                                                                <option value="">-- No mapear --</option>
+                                                                <template x-for="opt in formFields[section.key]" :key="opt">
+                                                                    <option :value="opt" x-text="opt"></option>
+                                                                </template>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            </template>
 
                             <div class="flex items-center justify-between pt-4 border-t">
                                 <a href="{{ route('admin.planify-logs.index') }}" class="text-sm text-indigo-600 hover:text-indigo-800">Ver historial de envíos</a>
@@ -363,8 +360,17 @@
         landing: {!! $formLanding !!}
     };
     window.__planifyData = {
-        mapping: @json($planifyMapping),
-        formFields: @json($allFormFields)
+        mappings: {
+            testdrive: @json($planifyMappingTestdrive),
+            cotizar: @json($planifyMappingCotizar),
+            landing: @json($planifyMappingLanding)
+        },
+        formFields: @json($formFieldsByType),
+        enabled: {
+            testdrive: {{ $s('planify_enabled_testdrive') == '1' ? 'true' : 'false' }},
+            cotizar: {{ $s('planify_enabled_cotizar') == '1' ? 'true' : 'false' }},
+            landing: {{ $s('planify_enabled_landing') == '1' ? 'true' : 'false' }}
+        }
     };
 </script>
 <script>
@@ -416,9 +422,15 @@ document.addEventListener('alpine:init', () => {
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('planifyIntegration', () => ({
-        mapping: {},
-        mappingJson: '{}',
-        formFieldOptions: [],
+        mappings: { testdrive: {}, cotizar: {}, landing: {} },
+        mappingJson: { testdrive: '{}', cotizar: '{}', landing: '{}' },
+        formFields: { testdrive: [], cotizar: [], landing: [] },
+        enabled: { testdrive: false, cotizar: false, landing: false },
+        sections: [
+            { key: 'testdrive', title: 'Formulario Test Drive' },
+            { key: 'cotizar', title: 'Formulario Cotizar' },
+            { key: 'landing', title: 'Formulario Landing Pages' },
+        ],
         planifyFields: [
             { key: 'name', desc: 'Nombre del contacto' },
             { key: 'surname', desc: 'Apellido del contacto' },
@@ -428,11 +440,17 @@ document.addEventListener('alpine:init', () => {
         ],
         init() {
             const data = window.__planifyData || {};
-            this.mapping = data.mapping || { name: 'nombre', surname: 'apellido', phone: 'telefono', model_name: 'modelo', branch_name: 'sucursal' };
-            this.formFieldOptions = data.formFields || [];
+            const defaultMap = { name: 'nombre', surname: 'apellido', phone: 'telefono', model_name: 'modelo', branch_name: '' };
+            this.mappings.testdrive = Object.keys(data.mappings?.testdrive || {}).length ? data.mappings.testdrive : { ...defaultMap };
+            this.mappings.cotizar = Object.keys(data.mappings?.cotizar || {}).length ? data.mappings.cotizar : { ...defaultMap };
+            this.mappings.landing = Object.keys(data.mappings?.landing || {}).length ? data.mappings.landing : { ...defaultMap };
+            this.formFields = data.formFields || { testdrive: [], cotizar: [], landing: [] };
+            this.enabled = data.enabled || { testdrive: false, cotizar: false, landing: false };
         },
-        serializeMapping() {
-            this.mappingJson = JSON.stringify(this.mapping);
+        serializeMappings() {
+            this.mappingJson.testdrive = JSON.stringify(this.mappings.testdrive);
+            this.mappingJson.cotizar = JSON.stringify(this.mappings.cotizar);
+            this.mappingJson.landing = JSON.stringify(this.mappings.landing);
         }
     }));
 });
