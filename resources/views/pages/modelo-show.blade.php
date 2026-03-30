@@ -176,6 +176,7 @@
                     <form class="lp-form" method="POST" action="{{ route('landing.submit', $landingPage) }}">
                         @csrf
                         <input type="hidden" name="landing_page_id" value="{{ $landingPage->id }}">
+                        <input type="hidden" name="modelo" value="{{ $modelo->nombre }}">
                         <input type="hidden" name="utm_source" value="{{ request('utm_source') }}">
                         <input type="hidden" name="utm_medium" value="{{ request('utm_medium') }}">
                         <input type="hidden" name="utm_campaign" value="{{ request('utm_campaign') }}">
