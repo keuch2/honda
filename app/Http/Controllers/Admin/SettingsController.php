@@ -157,19 +157,20 @@ class SettingsController extends Controller
         );
 
         $mappings = [
-            'planify_mapping_testdrive' => ['label' => 'Planify Mapping Test Drive', 'type' => 'json'],
-            'planify_mapping_cotizar' => ['label' => 'Planify Mapping Cotizar', 'type' => 'json'],
-            'planify_mapping_landing' => ['label' => 'Planify Mapping Landing', 'type' => 'json'],
+            'testdrive' => 'Planify Mapping Test Drive',
+            'cotizar' => 'Planify Mapping Cotizar',
+            'landing' => 'Planify Mapping Landing',
         ];
 
-        foreach ($mappings as $key => $meta) {
+        foreach ($mappings as $type => $label) {
+            $mapData = $request->input("planify_map_{$type}", []);
             SiteSetting::updateOrCreate(
-                ['key' => $key],
+                ['key' => "planify_mapping_{$type}"],
                 [
                     'group' => 'integrations',
-                    'value' => $request->input($key, '{}'),
-                    'type' => $meta['type'],
-                    'label' => $meta['label'],
+                    'value' => json_encode(is_array($mapData) ? $mapData : []),
+                    'type' => 'json',
+                    'label' => $label,
                 ]
             );
         }

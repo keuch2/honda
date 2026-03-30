@@ -284,6 +284,7 @@
                     $planifyMappingCotizar = json_decode($s('planify_mapping_cotizar', $defaultMapping), true) ?: [];
                     $planifyMappingLanding = json_decode($s('planify_mapping_landing', $defaultMapping), true) ?: [];
 
+                    $hardcodedFields = ['modelo'];
                     $formFieldsByType = [];
                     foreach (['testdrive' => $formTestdrive, 'cotizar' => $formCotizar, 'landing' => $formLanding] as $fKey => $fJson) {
                         $fields = is_string($fJson) ? json_decode($fJson, true) : $fJson;
@@ -295,16 +296,30 @@
                                 }
                             }
                         }
+                        foreach ($hardcodedFields as $hf) {
+                            if (!in_array($hf, $names)) $names[] = $hf;
+                        }
                         sort($names);
                         $formFieldsByType[$fKey] = $names;
                     }
+
+                    $planifyFields = [
+                        'name' => 'Nombre del contacto',
+                        'surname' => 'Apellido del contacto',
+                        'phone' => 'Teléfono del contacto',
+                        'model_name' => 'Modelo de vehículo consultado',
+                        'branch_name' => 'Sucursal / punto de venta',
+                    ];
+
+                    $planifySections = [
+                        'testdrive' => ['title' => 'Formulario Test Drive', 'mapping' => $planifyMappingTestdrive],
+                        'cotizar' => ['title' => 'Formulario Cotizar', 'mapping' => $planifyMappingCotizar],
+                        'landing' => ['title' => 'Formulario Landing Pages', 'mapping' => $planifyMappingLanding],
+                    ];
                 @endphp
-                <div x-show="tab === 'integrations'" x-data="planifyIntegration()">
-                    <form action="{{ route('admin.settings.integrations') }}" method="POST" @submit.prevent="submitForm($el)">
+                <div x-show="tab === 'integrations'">
+                    <form action="{{ route('admin.settings.integrations') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="planify_mapping_testdrive" :value="mappingJson.testdrive">
-                        <input type="hidden" name="planify_mapping_cotizar" :value="mappingJson.cotizar">
-                        <input type="hidden" name="planify_mapping_landing" :value="mappingJson.landing">
 
                         <div class="bg-white shadow-sm sm:rounded-lg p-6 space-y-6">
                             <div>
@@ -317,12 +332,12 @@
                                 <input type="text" name="planify_api_url" value="{{ $s('planify_api_url', 'https://planifypy.herokuapp.com/callbacks/create') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm font-mono text-xs" placeholder="https://planifypy.herokuapp.com/callbacks/create">
                             </div>
 
-                            <template x-for="section in sections" :key="section.key">
+                            @foreach ($planifySections as $sKey => $sData)
                                 <div class="space-y-3 border rounded-lg p-4">
                                     <div class="flex items-center justify-between">
-                                        <h4 class="text-sm font-semibold text-gray-800" x-text="section.title"></h4>
+                                        <h4 class="text-sm font-semibold text-gray-800">{{ $sData['title'] }}</h4>
                                         <label class="inline-flex items-center gap-2">
-                                            <input type="checkbox" :name="'planify_enabled_' + section.key" value="1" :checked="enabled[section.key]" class="h-4 w-4 rounded border-gray-300 text-indigo-600">
+                                            <input type="checkbox" name="planify_enabled_{{ $sKey }}" value="1" {{ $s('planify_enabled_' . $sKey) == '1' ? 'checked' : '' }} class="h-4 w-4 rounded border-gray-300 text-indigo-600">
                                             <span class="text-sm text-gray-700">Activar envío a Planify</span>
                                         </label>
                                     </div>
@@ -337,25 +352,25 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <template x-for="field in planifyFields" :key="field.key">
+                                                @foreach ($planifyFields as $pKey => $pDesc)
                                                     <tr class="border-b border-gray-100">
-                                                        <td class="px-3 py-2 font-mono text-xs font-semibold text-gray-800" x-text="field.key"></td>
-                                                        <td class="px-3 py-2 text-gray-500 text-xs" x-text="field.desc"></td>
+                                                        <td class="px-3 py-2 font-mono text-xs font-semibold text-gray-800">{{ $pKey }}</td>
+                                                        <td class="px-3 py-2 text-gray-500 text-xs">{{ $pDesc }}</td>
                                                         <td class="px-3 py-2">
-                                                            <select x-model="mappings[section.key][field.key]" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
+                                                            <select name="planify_map_{{ $sKey }}[{{ $pKey }}]" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
                                                                 <option value="">-- No mapear --</option>
-                                                                <template x-for="opt in formFields[section.key]" :key="opt">
-                                                                    <option :value="opt" x-text="opt"></option>
-                                                                </template>
+                                                                @foreach ($formFieldsByType[$sKey] as $opt)
+                                                                    <option value="{{ $opt }}" {{ ($sData['mapping'][$pKey] ?? '') === $opt ? 'selected' : '' }}>{{ $opt }}</option>
+                                                                @endforeach
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                </template>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                            </template>
+                            @endforeach
 
                             <div class="flex items-center justify-between pt-4 border-t">
                                 <a href="{{ route('admin.planify-logs.index') }}" class="text-sm text-indigo-600 hover:text-indigo-800">Ver historial de envíos</a>
@@ -375,19 +390,6 @@
         testdrive: {!! $formTestdrive !!},
         cotizar: {!! $formCotizar !!},
         landing: {!! $formLanding !!}
-    };
-    window.__planifyData = {
-        mappings: {
-            testdrive: @json($planifyMappingTestdrive),
-            cotizar: @json($planifyMappingCotizar),
-            landing: @json($planifyMappingLanding)
-        },
-        formFields: @json($formFieldsByType),
-        enabled: {
-            testdrive: {{ $s('planify_enabled_testdrive') == '1' ? 'true' : 'false' }},
-            cotizar: {{ $s('planify_enabled_cotizar') == '1' ? 'true' : 'false' }},
-            landing: {{ $s('planify_enabled_landing') == '1' ? 'true' : 'false' }}
-        }
     };
 </script>
 <script>
@@ -432,57 +434,6 @@ document.addEventListener('alpine:init', () => {
             this.serialized.testdrive = JSON.stringify(clean(this.forms.testdrive));
             this.serialized.cotizar = JSON.stringify(clean(this.forms.cotizar));
             this.serialized.landing = JSON.stringify(clean(this.forms.landing));
-        }
-    }));
-});
-</script>
-<script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('planifyIntegration', () => ({
-        mappings: { testdrive: {}, cotizar: {}, landing: {} },
-        mappingJson: { testdrive: '{}', cotizar: '{}', landing: '{}' },
-        formFields: { testdrive: [], cotizar: [], landing: [] },
-        enabled: { testdrive: false, cotizar: false, landing: false },
-        sections: [
-            { key: 'testdrive', title: 'Formulario Test Drive' },
-            { key: 'cotizar', title: 'Formulario Cotizar' },
-            { key: 'landing', title: 'Formulario Landing Pages' },
-        ],
-        planifyFields: [
-            { key: 'name', desc: 'Nombre del contacto' },
-            { key: 'surname', desc: 'Apellido del contacto' },
-            { key: 'phone', desc: 'Teléfono del contacto' },
-            { key: 'model_name', desc: 'Modelo de vehículo consultado' },
-            { key: 'branch_name', desc: 'Sucursal / punto de venta' },
-        ],
-        init() {
-            const data = window.__planifyData || {};
-            const rawFields = window.__formFieldsData || {};
-            const defaultMap = { name: 'nombre', surname: 'apellido', phone: 'telefono', model_name: 'modelo', branch_name: '' };
-            this.mappings.testdrive = Object.keys(data.mappings?.testdrive || {}).length ? data.mappings.testdrive : { ...defaultMap };
-            this.mappings.cotizar = Object.keys(data.mappings?.cotizar || {}).length ? data.mappings.cotizar : { ...defaultMap };
-            this.mappings.landing = Object.keys(data.mappings?.landing || {}).length ? data.mappings.landing : { ...defaultMap };
-            // Build field list from __formFieldsData (includes hidden fields + newly added fields)
-            // Also include hardcoded fields (like 'modelo') that are always submitted but not in the config
-            const hardcodedFields = ['modelo'];
-            const extractNames = (arr) => {
-                if (!Array.isArray(arr)) return [];
-                const names = arr.map(f => f.name).filter(n => n && n.trim() !== '');
-                hardcodedFields.forEach(hf => { if (!names.includes(hf)) names.push(hf); });
-                return names.sort();
-            };
-            this.formFields = {
-                testdrive: extractNames(rawFields.testdrive),
-                cotizar: extractNames(rawFields.cotizar),
-                landing: extractNames(rawFields.landing),
-            };
-            this.enabled = data.enabled || { testdrive: false, cotizar: false, landing: false };
-        },
-        submitForm(form) {
-            form.querySelector('[name="planify_mapping_testdrive"]').value = JSON.stringify(this.mappings.testdrive);
-            form.querySelector('[name="planify_mapping_cotizar"]').value = JSON.stringify(this.mappings.cotizar);
-            form.querySelector('[name="planify_mapping_landing"]').value = JSON.stringify(this.mappings.landing);
-            form.submit();
         }
     }));
 });
