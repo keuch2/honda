@@ -33,3 +33,4 @@ Thumbs.db
 /public/tinymce/
 *.zip
 /WR-V/
+/.claude/
