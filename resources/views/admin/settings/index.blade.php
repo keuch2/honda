@@ -457,11 +457,21 @@ document.addEventListener('alpine:init', () => {
         ],
         init() {
             const data = window.__planifyData || {};
+            const rawFields = window.__formFieldsData || {};
             const defaultMap = { name: 'nombre', surname: 'apellido', phone: 'telefono', model_name: 'modelo', branch_name: '' };
             this.mappings.testdrive = Object.keys(data.mappings?.testdrive || {}).length ? data.mappings.testdrive : { ...defaultMap };
             this.mappings.cotizar = Object.keys(data.mappings?.cotizar || {}).length ? data.mappings.cotizar : { ...defaultMap };
             this.mappings.landing = Object.keys(data.mappings?.landing || {}).length ? data.mappings.landing : { ...defaultMap };
-            this.formFields = data.formFields || { testdrive: [], cotizar: [], landing: [] };
+            // Build field list from __formFieldsData (includes hidden fields + newly added fields)
+            const extractNames = (arr) => {
+                if (!Array.isArray(arr)) return [];
+                return arr.map(f => f.name).filter(n => n && n.trim() !== '').sort();
+            };
+            this.formFields = {
+                testdrive: extractNames(rawFields.testdrive),
+                cotizar: extractNames(rawFields.cotizar),
+                landing: extractNames(rawFields.landing),
+            };
             this.enabled = data.enabled || { testdrive: false, cotizar: false, landing: false };
         },
         serializeMappings() {
