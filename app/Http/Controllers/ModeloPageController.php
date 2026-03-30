@@ -68,7 +68,7 @@ class ModeloPageController extends Controller
             'nombre' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'telefono' => 'required|string|max:50',
-            'ciudad' => 'required|string|max:100',
+            'ciudad' => 'nullable|string|max:100',
         ]);
 
         $lead = Lead::create([
@@ -77,7 +77,7 @@ class ModeloPageController extends Controller
             'nombre' => $data['nombre'],
             'email' => $data['email'],
             'telefono' => $data['telefono'],
-            'ciudad' => $data['ciudad'],
+            'ciudad' => $data['ciudad'] ?? null,
             'modelo_consultado' => $landingPage->modelo?->nombre,
             'fuente' => 'landing',
             'utm_source' => $request->input('utm_source'),

@@ -182,7 +182,7 @@
                         <input type="hidden" name="utm_content" value="{{ request('utm_content') }}">
 
                         <div class="lp-form-grid">
-                        @foreach($formCotizarFields ?? [] as $field)
+                        @foreach($formLandingFields ?? [] as $field)
                             @if(($field['type'] ?? '') === 'hidden')
                                 <input type="hidden" name="{{ $field['name'] }}" value="{{ $field['value'] ?? '' }}">
                             @elseif($field['type'] === 'select' && $field['name'] === 'modelo')

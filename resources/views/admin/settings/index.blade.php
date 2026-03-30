@@ -142,7 +142,7 @@
                 @php
                     $defaultTestdrive = '[{"name":"nombre","label":"Nombre Completo","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"ciudad","label":"Ciudad","type":"text","required":true},{"name":"modelo","label":"Modelo","type":"select","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
                     $defaultCotizar = '[{"name":"nombre","label":"Nombre Completo","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"ciudad","label":"Ciudad","type":"text","required":true},{"name":"modelo","label":"Modelo","type":"select","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
-                    $defaultLanding = '[{"name":"nombre","label":"Nombre Completo","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
+                    $defaultLanding = '[{"name":"nombre","label":"Nombre","type":"text","required":true},{"name":"apellido","label":"Apellido","type":"text","required":true},{"name":"telefono","label":"Teléfono","type":"tel","required":true},{"name":"email","label":"Email","type":"email","required":true},{"name":"ciudad","label":"Ciudad","type":"text","required":true},{"name":"modelo","label":"Modelo","type":"select","required":true},{"name":"comentarios","label":"Comentarios","type":"textarea","required":false}]';
 
                     $formTestdrive = $s('form_testdrive_fields', $defaultTestdrive);
                     $formCotizar = $s('form_cotizar_fields', $defaultCotizar);
@@ -386,7 +386,7 @@
 <script>
 let _uidCounter = 0;
 function assignUids(arr) {
-    return arr.map(f => ({ ...f, _uid: ++_uidCounter }));
+    return arr.map(f => ({ value: '', ...f, _uid: ++_uidCounter }));
 }
 document.addEventListener('alpine:init', () => {
     Alpine.data('formFieldsManager', () => ({
