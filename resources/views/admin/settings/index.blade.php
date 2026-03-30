@@ -175,7 +175,8 @@
                                                     <th class="px-2 py-1">Nombre campo</th>
                                                     <th class="px-2 py-1">Etiqueta</th>
                                                     <th class="px-2 py-1">Tipo</th>
-                                                    <th class="px-2 py-1">Valor (oculto)</th>
+                                                    <th class="px-2 py-1 w-20 text-center">Oculto</th>
+                                                    <th class="px-2 py-1">Valor fijo</th>
                                                     <th class="px-2 py-1 w-20 text-center">Requerido</th>
                                                     <th class="px-2 py-1 w-24 text-center">Orden</th>
                                                     <th class="px-2 py-1 w-10"></th>
@@ -188,23 +189,33 @@
                                                         <td class="px-2 py-2">
                                                             <input type="text" x-model="field.name" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="nombre_campo">
                                                         </td>
-                                                        <td class="px-2 py-2">
-                                                            <input type="text" x-model="field.label" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Etiqueta visible">
+                                                        <td class="px-2 py-2" :class="field.type === 'hidden' ? 'opacity-40' : ''">
+                                                            <input type="text" x-model="field.label" :disabled="field.type === 'hidden'" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Etiqueta visible">
                                                         </td>
-                                                        <td class="px-2 py-2">
-                                                            <select x-model="field.type" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
+                                                        <td class="px-2 py-2" :class="field.type === 'hidden' ? 'opacity-40' : ''">
+                                                            <select x-model="field.type" x-show="field.type !== 'hidden'" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm">
                                                                 <option value="text">Texto</option>
                                                                 <option value="email">Email</option>
                                                                 <option value="tel">Teléfono</option>
                                                                 <option value="number">Número</option>
                                                                 <option value="textarea">Área de texto</option>
                                                                 <option value="select">Select (Modelos)</option>
-                                                                <option value="hidden">Oculto</option>
                                                             </select>
+                                                            <span x-show="field.type === 'hidden'" class="text-xs text-gray-400 italic">oculto</span>
+                                                        </td>
+                                                        <td class="px-2 py-2 text-center">
+                                                            <input type="checkbox"
+                                                                :checked="field.type === 'hidden'"
+                                                                @change="field.type = $event.target.checked ? 'hidden' : 'text'"
+                                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600">
                                                         </td>
                                                         <td class="px-2 py-2">
-                                                            <input x-show="field.type === 'hidden'" type="text" x-model="field.value" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Valor fijo">
-                                                            <span x-show="field.type !== 'hidden'" class="text-xs text-gray-400">-</span>
+                                                            <template x-if="field.type === 'hidden'">
+                                                                <input type="text" x-model="field.value" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Valor fijo">
+                                                            </template>
+                                                            <template x-if="field.type !== 'hidden'">
+                                                                <span class="text-xs text-gray-400">-</span>
+                                                            </template>
                                                         </td>
                                                         <td class="px-2 py-2 text-center">
                                                             <input type="checkbox" x-model="field.required" class="h-4 w-4 rounded border-gray-300 text-indigo-600">
