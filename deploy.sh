@@ -16,6 +16,16 @@ SERVER_PORT="5519"
 PROJECT_DIR="/home/honda/public_html"
 PHP="/opt/php8-3/bin/php-cli"
 
+# Load server password from .deploy.env
+if [ -f "$(dirname "$0")/.deploy.env" ]; then
+    source "$(dirname "$0")/.deploy.env"
+fi
+
+if [ -z "$SERVER_PASS" ]; then
+    echo -e "${RED}ERROR: SERVER_PASS no está definido. Crear .deploy.env con SERVER_PASS=tu_password${NC}"
+    exit 1
+fi
+
 echo -e "${YELLOW}Honda Paraguay - Deploy a produccion${NC}"
 echo "======================================"
 echo ""
@@ -39,14 +49,14 @@ echo ""
 
 # 3. Deploy en servidor via SSH
 echo -e "${YELLOW}3. Desplegando en servidor...${NC}"
-ssh -p${SERVER_PORT} ${SERVER_USER}@${SERVER_HOST} bash -s << REMOTE_COMMANDS
+sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no -p${SERVER_PORT} ${SERVER_USER}@${SERVER_HOST} bash -s << REMOTE_COMMANDS
     cd ${PROJECT_DIR}
 
     echo ">> Pulling cambios de GitHub..."
     git pull origin main
 
     echo ">> Instalando dependencias..."
-    ${PHP} /usr/local/bin/composer install --no-dev --optimize-autoloader || echo "composer install skipped"
+    ${PHP} /usr/local/bin/composer install --no-dev --optimize-autoloader
 
     echo ">> Ejecutando migraciones..."
     ${PHP} artisan migrate --force
@@ -65,7 +75,6 @@ ssh -p${SERVER_PORT} ${SERVER_USER}@${SERVER_HOST} bash -s << REMOTE_COMMANDS
     echo ">> Verificando permisos..."
     chmod -R 755 storage
     chmod -R 755 bootstrap/cache
-    chmod 644 database/database.sqlite 2>/dev/null
 
     echo ">> Deploy completado!"
     ${PHP} artisan --version

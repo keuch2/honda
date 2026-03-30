@@ -23,9 +23,9 @@ php artisan test --filter TestName   # Run a single test
 # Code style
 ./vendor/bin/pint    # Laravel Pint (PSR-12 code style fixer)
 
-# Deployment (Ferozo shared hosting)
-bash prepare-ferozo-deployment.sh    # Prepare build for upload
-bash comandos-servidor.sh            # Run on server after upload
+# Deployment (cloud server via SSH)
+bash deploy.sh       # Build assets, push to GitHub, deploy to server via SSH
+                     # Requires .deploy.env with SERVER_PASS=<password>
 ```
 
 ## Architecture
@@ -42,7 +42,7 @@ This is a Honda dealership website for Paraguay, built as a standard Laravel 12 
 - `routes/web.php` — all public and admin routes (no `api.php`; API endpoints live in web.php under `/api` prefix)
 - `routes/admin.php` — loaded by `RouteServiceProvider` with `['web', 'auth']` middleware
 - `routes/auth.php` — Breeze auth routes
-- All admin routes are explicitly defined (not using `Route::resource`) for Ferozo shared hosting compatibility
+- All admin routes are explicitly defined (not using `Route::resource`)
 
 ### Key Models
 
@@ -83,7 +83,8 @@ The composer catches exceptions so the site doesn't break before migrations are 
 
 ### Deployment Target
 
-The project deploys to **Ferozo shared hosting** (PHP shared host). This is why:
-- Routes are explicitly listed rather than using resourceful routing helpers
-- Deployment scripts restructure the public directory layout
-- No Docker/Sail is used in production
+The project deploys to a **cloud server** (root@168.181.184.99, port 5519). Deploy via:
+```bash
+bash deploy.sh
+```
+Credentials are stored locally in `.deploy.env` (gitignored). The server runs PHP 8.3 at `/opt/php8-3/bin/php-cli` and the project lives at `/home/honda/public_html`.

@@ -86,7 +86,7 @@ Route::get('/{modelo}', [ModeloPageController::class, 'show'])->name('modelo.sho
     ->where('modelo', '[a-z0-9][a-z0-9\-]*');
 
 // =============================================
-// RUTAS ADMIN (rutas explícitas para compatibilidad con Ferozo)
+// RUTAS ADMIN (rutas explícitas)
 // =============================================
 Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::redirect('/', '/admin/usados');

@@ -34,3 +34,4 @@ Thumbs.db
 *.zip
 /WR-V/
 /.claude/
+/.deploy.env
