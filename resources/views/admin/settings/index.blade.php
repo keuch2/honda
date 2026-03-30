@@ -463,9 +463,13 @@ document.addEventListener('alpine:init', () => {
             this.mappings.cotizar = Object.keys(data.mappings?.cotizar || {}).length ? data.mappings.cotizar : { ...defaultMap };
             this.mappings.landing = Object.keys(data.mappings?.landing || {}).length ? data.mappings.landing : { ...defaultMap };
             // Build field list from __formFieldsData (includes hidden fields + newly added fields)
+            // Also include hardcoded fields (like 'modelo') that are always submitted but not in the config
+            const hardcodedFields = ['modelo'];
             const extractNames = (arr) => {
                 if (!Array.isArray(arr)) return [];
-                return arr.map(f => f.name).filter(n => n && n.trim() !== '').sort();
+                const names = arr.map(f => f.name).filter(n => n && n.trim() !== '');
+                hardcodedFields.forEach(hf => { if (!names.includes(hf)) names.push(hf); });
+                return names.sort();
             };
             this.formFields = {
                 testdrive: extractNames(rawFields.testdrive),
