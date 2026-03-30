@@ -300,7 +300,7 @@
                     }
                 @endphp
                 <div x-show="tab === 'integrations'" x-data="planifyIntegration()">
-                    <form action="{{ route('admin.settings.integrations') }}" method="POST" @submit="serializeMappings()">
+                    <form action="{{ route('admin.settings.integrations') }}" method="POST" @submit.prevent="submitForm($el)">
                         @csrf
                         <input type="hidden" name="planify_mapping_testdrive" :value="mappingJson.testdrive">
                         <input type="hidden" name="planify_mapping_cotizar" :value="mappingJson.cotizar">
@@ -474,10 +474,11 @@ document.addEventListener('alpine:init', () => {
             };
             this.enabled = data.enabled || { testdrive: false, cotizar: false, landing: false };
         },
-        serializeMappings() {
-            this.mappingJson.testdrive = JSON.stringify(this.mappings.testdrive);
-            this.mappingJson.cotizar = JSON.stringify(this.mappings.cotizar);
-            this.mappingJson.landing = JSON.stringify(this.mappings.landing);
+        submitForm(form) {
+            form.querySelector('[name="planify_mapping_testdrive"]').value = JSON.stringify(this.mappings.testdrive);
+            form.querySelector('[name="planify_mapping_cotizar"]').value = JSON.stringify(this.mappings.cotizar);
+            form.querySelector('[name="planify_mapping_landing"]').value = JSON.stringify(this.mappings.landing);
+            form.submit();
         }
     }));
 });
