@@ -203,12 +203,8 @@
                                                             </select>
                                                         </td>
                                                         <td class="px-2 py-2">
-                                                            <template x-if="field.type === 'hidden'">
-                                                                <input type="text" x-model="field.value" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Valor fijo">
-                                                            </template>
-                                                            <template x-if="field.type !== 'hidden'">
-                                                                <span class="text-xs text-gray-400">-</span>
-                                                            </template>
+                                                            <input x-show="field.type === 'hidden'" type="text" x-model="field.value" class="block w-full rounded border-gray-300 shadow-sm sm:text-sm" placeholder="Valor fijo">
+                                                            <span x-show="field.type !== 'hidden'" class="text-xs text-gray-400">-</span>
                                                         </td>
                                                         <td class="px-2 py-2 text-center">
                                                             <input type="checkbox" x-model="field.required" class="h-4 w-4 rounded border-gray-300 text-indigo-600">
