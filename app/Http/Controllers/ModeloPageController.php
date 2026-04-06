@@ -126,6 +126,7 @@ class ModeloPageController extends Controller
             'comentarios' => 'nullable|string|max:1000',
         ]);
 
+        $data['modelo'] = strtoupper($data['modelo']);
         $modelo = Modelo::where('nombre', $data['modelo'])->first();
 
         $lead = Lead::create([
@@ -175,6 +176,7 @@ class ModeloPageController extends Controller
             'comentarios' => 'nullable|string|max:1000',
         ]);
 
+        $data['modelo'] = strtoupper($data['modelo']);
         $modelo = Modelo::where('nombre', $data['modelo'])->first();
 
         $lead = Lead::create([
