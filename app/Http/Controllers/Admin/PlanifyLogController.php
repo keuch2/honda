@@ -39,4 +39,22 @@ class PlanifyLogController extends Controller
 
         return back()->with('status', $status);
     }
+
+    public function retryFailed()
+    {
+        $logs = PlanifyLog::where(function ($q) {
+            $q->whereNull('response_status')
+              ->orWhere('response_status', '<', 200)
+              ->orWhere('response_status', '>=', 300);
+        })->get();
+
+        $success = 0;
+        $failed = 0;
+        foreach ($logs as $log) {
+            PlanifyService::retry($log);
+            $log->fresh()->isSuccess() ? $success++ : $failed++;
+        }
+
+        return back()->with('status', "Reintento masivo: {$success} exitosos, {$failed} fallidos.");
+    }
 }

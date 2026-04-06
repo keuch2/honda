@@ -191,4 +191,5 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     // Planify logs
     Route::get('planify-logs', [App\Http\Controllers\Admin\PlanifyLogController::class, 'index'])->name('planify-logs.index');
     Route::post('planify-logs/{planifyLog}/retry', [App\Http\Controllers\Admin\PlanifyLogController::class, 'retry'])->name('planify-logs.retry');
+    Route::post('planify-logs/retry-failed', [App\Http\Controllers\Admin\PlanifyLogController::class, 'retryFailed'])->name('planify-logs.retry-failed');
 });
