@@ -21,7 +21,7 @@ class PlanifyService
 
         $source = in_array($formType, ['landing', 'landing-testdrive', 'landing-cotizar'])
             ? 'Google Ads'
-            : 'Web Form';
+            : 'Web Formulario';
 
         $payload = [
             'name' => $formData[$mapping['name'] ?? ''] ?? '',
