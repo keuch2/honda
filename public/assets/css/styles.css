@@ -1766,7 +1766,7 @@ body {
 
 .hero-card {
     position: absolute;
-    right: 60px;
+    right: 160px;
     bottom: 0;
     z-index: 10;
     background: rgba(0,0,0,0.75);
@@ -3269,8 +3269,8 @@ html {
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .hero-card {
-        right: 30px !important;
-        bottom: 24px !important;
+        right: 120px !important;
+        bottom: 0 !important;
     }
     
     .versiones-container {
