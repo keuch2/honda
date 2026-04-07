@@ -68,6 +68,12 @@ class UsadoController extends Controller
         $data = $this->validateData($request);
 
         $data['is_visible'] = $request->boolean('is_visible', true);
+        $data['is_hot_sale'] = $request->boolean('is_hot_sale', false);
+        if (!$data['is_hot_sale']) {
+            $data['hot_sale_ends_at'] = null;
+        }
+        $data['is_vendido'] = $request->boolean('is_vendido', false);
+        $data['vendido_at'] = $data['is_vendido'] ? now() : null;
 
         if (empty($data['portada'])) {
             $data['portada'] = null;
@@ -114,6 +120,17 @@ class UsadoController extends Controller
         $data = $this->validateData($request, $usado);
 
         $data['is_visible'] = $request->boolean('is_visible', true);
+        $data['is_hot_sale'] = $request->boolean('is_hot_sale', false);
+        if (!$data['is_hot_sale']) {
+            $data['hot_sale_ends_at'] = null;
+        }
+        $wasVendido = $usado->is_vendido;
+        $data['is_vendido'] = $request->boolean('is_vendido', false);
+        if ($data['is_vendido'] && !$wasVendido) {
+            $data['vendido_at'] = now();
+        } elseif (!$data['is_vendido']) {
+            $data['vendido_at'] = null;
+        }
 
         if (empty($data['portada'])) {
             $data['portada'] = null;
@@ -175,6 +192,9 @@ class UsadoController extends Controller
             'portada_file' => ['nullable', 'image', 'max:5120'],
             'is_visible' => ['nullable', 'boolean'],
             'orden' => ['nullable', 'integer', 'min:0'],
+            'is_hot_sale' => ['nullable', 'boolean'],
+            'hot_sale_ends_at' => ['nullable', 'date'],
+            'is_vendido' => ['nullable', 'boolean'],
             'images' => ['nullable', 'array'],
             'images.*.path' => ['nullable', 'string', 'max:255'],
             'images.*.titulo' => ['nullable', 'string', 'max:100'],

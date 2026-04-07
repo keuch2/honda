@@ -35,6 +35,10 @@ class Usado extends Model
         'portada',
         'is_visible',
         'orden',
+        'is_hot_sale',
+        'hot_sale_ends_at',
+        'is_vendido',
+        'vendido_at',
     ];
 
     protected $casts = [
@@ -46,6 +50,10 @@ class Usado extends Model
         'precio_lista' => 'integer',
         'is_visible' => 'boolean',
         'orden' => 'integer',
+        'is_hot_sale' => 'boolean',
+        'hot_sale_ends_at' => 'datetime',
+        'is_vendido' => 'boolean',
+        'vendido_at' => 'datetime',
     ];
 
     public function images()
@@ -60,7 +68,21 @@ class Usado extends Model
 
     public function scopeVisible($query)
     {
-        return $query->where('is_visible', true);
+        return $query->where('is_visible', true)
+            ->where(function ($q) {
+                $q->where('is_vendido', false)
+                  ->orWhere('vendido_at', '>', now()->subHours(24));
+            });
+    }
+
+    public function isHotSaleActive(): bool
+    {
+        return $this->is_hot_sale && $this->hot_sale_ends_at && $this->hot_sale_ends_at->isFuture();
+    }
+
+    public function isVendidoVisible(): bool
+    {
+        return $this->is_vendido && $this->vendido_at && $this->vendido_at->gt(now()->subHours(24));
     }
 
     public function getRouteKeyName(): string

@@ -199,6 +199,47 @@
         font-size: 15px;
         color: #666;
     }
+
+    .usado-show-hot-banner {
+        background: #cc0000;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .usado-show-hot-banner .hot-label {
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .usado-show-hot-timer {
+        font-size: 14px;
+        font-weight: 700;
+        background: rgba(0,0,0,0.2);
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    .usado-show-vendido-badge {
+        background: #1f1f1f;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 20px;
+        font-weight: 900;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 24px;
+    }
 </style>
 @endpush
 
@@ -241,6 +282,15 @@
                 </div>
 
                 <div>
+                    @if($usado->isHotSaleActive())
+                        <div class="usado-show-hot-banner">
+                            <span class="hot-label">🔥 Hot Sale</span>
+                            <span class="usado-show-hot-timer" data-ends-at="{{ $usado->hot_sale_ends_at->utc()->toIso8601String() }}">Cargando...</span>
+                        </div>
+                    @endif
+                    @if($usado->isVendidoVisible())
+                        <div class="usado-show-vendido-badge">✅ Vendido</div>
+                    @endif
                     <h1 style="font-size: 36px; font-weight: 800; margin-bottom: 20px; color: #333;">
                         {{ $usado->displayName() }}
                     </h1>
@@ -350,6 +400,27 @@
 
 @push('scripts')
 <script>
+    (function () {
+        var timerEl = document.querySelector('.usado-show-hot-timer[data-ends-at]');
+        if (timerEl) {
+            function formatCountdown(s) {
+                if (s <= 0) return 'Finalizado';
+                var h = Math.floor(s / 3600);
+                var m = Math.floor((s % 3600) / 60);
+                var sec = s % 60;
+                return '⏳ ' + (h > 0 ? h + 'h ' : '') + String(m).padStart(2,'0') + 'm ' + String(sec).padStart(2,'0') + 's';
+            }
+            function tickShow() {
+                var endsAt = new Date(timerEl.dataset.endsAt).getTime();
+                var diff = Math.max(0, Math.floor((endsAt - Date.now()) / 1000));
+                timerEl.textContent = formatCountdown(diff);
+                if (diff === 0) { setTimeout(function(){ location.reload(); }, 1500); }
+            }
+            tickShow();
+            setInterval(tickShow, 1000);
+        }
+    })();
+
     (function () {
         const mainImg = document.getElementById('usado-gallery-main-img');
         const thumbsContainer = document.getElementById('usado-gallery-thumbs');

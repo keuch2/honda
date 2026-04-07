@@ -146,6 +146,36 @@
                     @enderror
                 </div>
             </div>
+
+            <!-- Hot Sale -->
+            <div x-data="{ hotSale: {{ old('is_hot_sale', $usado->is_hot_sale ?? false) ? 'true' : 'false' }} }" class="border border-orange-200 bg-orange-50 rounded-lg p-4 space-y-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="is_hot_sale" value="1" x-model="hotSale" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-red-500 focus:ring-red-500" {{ old('is_hot_sale', $usado->is_hot_sale ?? false) ? 'checked' : '' }}>
+                    <span class="text-sm font-semibold text-orange-700">🔥 Hot Sale</span>
+                </label>
+                <div x-show="hotSale" x-cloak>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Fecha y hora de finalización del Hot Sale</label>
+                    <input type="datetime-local" name="hot_sale_ends_at"
+                        value="{{ old('hot_sale_ends_at', $usado->hot_sale_ends_at ? $usado->hot_sale_ends_at->format('Y-m-d\TH:i') : '') }}"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 text-sm">
+                    @error('hot_sale_ends_at')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-1 text-xs text-gray-500">El vehículo saldrá del Hot Sale automáticamente al llegar a esta fecha.</p>
+                </div>
+            </div>
+
+            <!-- Vendido -->
+            <div class="border border-gray-200 bg-gray-50 rounded-lg p-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="is_vendido" value="1" class="rounded border-gray-300 text-gray-600 shadow-sm focus:border-gray-500 focus:ring-gray-500" {{ old('is_vendido', $usado->is_vendido ?? false) ? 'checked' : '' }}>
+                    <span class="text-sm font-semibold text-gray-700">✅ Vendido</span>
+                </label>
+                <p class="mt-1 text-xs text-gray-500 ml-6">El vehículo mostrará la etiqueta "VENDIDO" y se despublicará automáticamente 24 horas después de marcarse como vendido.</p>
+                @if($usado->is_vendido && $usado->vendido_at)
+                    <p class="mt-1 text-xs text-orange-600 ml-6">Marcado como vendido el {{ $usado->vendido_at->format('d/m/Y H:i') }}. Se despublicará el {{ $usado->vendido_at->addHours(24)->format('d/m/Y H:i') }}.</p>
+                @endif
+            </div>
         </div>
     </div>
 

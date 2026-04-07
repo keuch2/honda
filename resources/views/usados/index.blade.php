@@ -134,6 +134,67 @@
     .pagination {
         justify-content: center;
     }
+
+    /* Hot Sale */
+    .car-item.hot-sale {
+        border: 3px solid #cc0000;
+        box-shadow: 0 0 0 1px #cc0000;
+    }
+
+    .usado-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 10;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .usado-badge-hot {
+        background: #cc0000;
+        color: #fff;
+    }
+
+    .usado-badge-vendido {
+        background: #1f1f1f;
+        color: #fff;
+    }
+
+    .usado-hot-sale-timer {
+        background: #fff3f3;
+        border-top: 1px solid #fecdca;
+        padding: 8px 12px;
+        text-align: center;
+        font-size: 12px;
+        color: #b42318;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .usado-vendido-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
+
+    .usado-vendido-overlay span {
+        background: #1f1f1f;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: 3px;
+        padding: 10px 24px;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
 </style>
 @endpush
 
@@ -161,7 +222,11 @@
             @else
                 <div class="usados-grid-container">
                     @foreach($usados as $usado)
-                        <div class="car-item gray-bg">
+                        @php
+                            $hotSaleActive = $usado->isHotSaleActive();
+                            $vendidoVisible = $usado->isVendidoVisible();
+                        @endphp
+                        <div class="car-item gray-bg {{ $hotSaleActive ? 'hot-sale' : '' }}">
                             <div class="usado-card-image">
                                 <a href="{{ route('usados.show', $usado) }}">
                                     @if($cover = $usado->coverImageUrl())
@@ -170,7 +235,19 @@
                                         <span class="usado-card-placeholder">Imagen no disponible</span>
                                     @endif
                                 </a>
+                                @if($hotSaleActive)
+                                    <div class="usado-badge usado-badge-hot">🔥 Hot Sale</div>
+                                @endif
+                                @if($vendidoVisible)
+                                    <div class="usado-vendido-overlay">
+                                        <span>Vendido</span>
+                                    </div>
+                                    <div class="usado-badge usado-badge-vendido">Vendido</div>
+                                @endif
                             </div>
+                            @if($hotSaleActive)
+                                <div class="usado-hot-sale-timer" data-ends-at="{{ $usado->hot_sale_ends_at->utc()->toIso8601String() }}">Cargando...</div>
+                            @endif
                             <div class="car-content">
                                 <a href="{{ route('usados.show', $usado) }}" class="usado-card-title">
                                     {{ $usado->displayName() }}
@@ -192,3 +269,39 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    function formatCountdown(secondsLeft) {
+        if (secondsLeft <= 0) return 'Finalizado';
+        var h = Math.floor(secondsLeft / 3600);
+        var m = Math.floor((secondsLeft % 3600) / 60);
+        var s = secondsLeft % 60;
+        return '⏳ Termina en: ' + (h > 0 ? h + 'h ' : '') + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's';
+    }
+
+    function initTimers() {
+        var timers = document.querySelectorAll('.usado-hot-sale-timer[data-ends-at]');
+        if (!timers.length) return;
+
+        function tick() {
+            var now = Date.now();
+            timers.forEach(function (el) {
+                var endsAt = new Date(el.dataset.endsAt).getTime();
+                var diff = Math.max(0, Math.floor((endsAt - now) / 1000));
+                el.textContent = formatCountdown(diff);
+                if (diff === 0) {
+                    setTimeout(function () { location.reload(); }, 1500);
+                }
+            });
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', initTimers);
+})();
+</script>
+@endpush

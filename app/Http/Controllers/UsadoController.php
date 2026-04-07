@@ -14,7 +14,9 @@ class UsadoController extends Controller
      */
     public function index(Request $request): View
     {
+        $now = now();
         $usados = Usado::visible()
+            ->orderByRaw('(is_hot_sale = 1 AND hot_sale_ends_at > ?) DESC', [$now])
             ->orderByDesc('anio')
             ->orderBy('marca')
             ->with('images')

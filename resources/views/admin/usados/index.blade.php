@@ -98,11 +98,19 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $usado->anio ?? '—' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{{ $usado->formattedPrice('precio_contado') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @if($usado->is_visible)
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">Publicado</span>
-                                        @else
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600">Oculto</span>
-                                        @endif
+                                        <div class="flex flex-col gap-1">
+                                            @if($usado->is_visible)
+                                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">Publicado</span>
+                                            @else
+                                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600">Oculto</span>
+                                            @endif
+                                            @if($usado->isHotSaleActive())
+                                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-700">🔥 Hot Sale</span>
+                                            @endif
+                                            @if($usado->is_vendido)
+                                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">✅ Vendido</span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                         <a href="{{ route('admin.usados.edit', $usado) }}" class="text-red-600 hover:text-red-900">Editar</a>
