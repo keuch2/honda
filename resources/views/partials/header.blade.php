@@ -3,7 +3,7 @@
         <div class="header-content">
             <div class="logo">
                 <a href="{{ url('/') }}" class="logo-honda">
-                    <img src="{{ asset('assets/images/logohonda.png') }}" alt="Honda Paraguay - The Power of Dreams" class="logo-image">
+                    <img src="{{ asset('assets/images/honda_logo.png') }}" alt="Honda Paraguay - The Power of Dreams" class="logo-image">
                 </a>
             </div>
 

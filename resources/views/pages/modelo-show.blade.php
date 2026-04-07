@@ -213,7 +213,7 @@
         @else
             {{-- Normal modelo page: existing dark card with CTA buttons --}}
             <div class="hero-card">
-                <h1>{{ strtoupper($modelo->nombre) }} {{ $modelo->anio }}</h1>
+                <h1>{{ strtoupper($modelo->nombre) }}</h1>
                 @if($modelo->subtitulo)
                     <p class="hero-card-subtitle">{{ $modelo->subtitulo }}</p>
                 @endif
