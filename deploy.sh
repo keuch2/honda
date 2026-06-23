@@ -55,6 +55,14 @@ sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no -p${SERVER_PORT} ${SER
     echo ">> Pulling cambios de GitHub..."
     git pull origin main
 
+    echo ">> Sincronizando assets de Vite (build -> public/build)..."
+    # El document root es la raiz del repo, asi que Vite compila a ./build
+    # (buildDirectory '../build') y se sirve en /build. Pero Laravel lee el
+    # manifest desde public/build/manifest.json. Sincronizamos para que el
+    # manifest que lee Laravel coincida siempre con los assets servidos.
+    rm -rf public/build
+    cp -r build public/build
+
     echo ">> Instalando dependencias..."
     ${PHP} /usr/local/bin/composer install --no-dev --optimize-autoloader
 
