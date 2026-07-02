@@ -198,5 +198,5 @@
         map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkimkZ6DPj3I8nxIgwrQsoTL0JCFW4ljk&callback=initTalleresMap&libraries=places&v=weekly" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2Tr-Hr7sbhhOf6E27mDFRx6YUpnFYwts&callback=initTalleresMap&libraries=places&v=weekly" async defer></script>
 @endpush

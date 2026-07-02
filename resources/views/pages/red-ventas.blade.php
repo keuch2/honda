@@ -86,5 +86,5 @@
         if (!bounds.isEmpty()) map.fitBounds(bounds);
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkimkZ6DPj3I8nxIgwrQsoTL0JCFW4ljk&callback=initShowroomsMap&libraries=places&v=weekly" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2Tr-Hr7sbhhOf6E27mDFRx6YUpnFYwts&callback=initShowroomsMap&libraries=places&v=weekly" async defer></script>
 @endpush
