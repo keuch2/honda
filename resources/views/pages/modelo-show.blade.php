@@ -154,7 +154,11 @@
 @section('content')
 
     <!-- Hero Detalle Modelo -->
-    <section class="modelo-hero {{ $modelo->hero_css_class ?? 'hero-' . $modelo->slug }} {{ ($isLanding ?? false) ? 'landing-active' : '' }}">
+    @php
+        $heroImageUrl = ($isLanding ?? false) ? $landingPage->heroImageUrl() : $modelo->heroImageUrl();
+    @endphp
+    <section class="modelo-hero {{ $modelo->hero_css_class ?? 'hero-' . $modelo->slug }} {{ ($isLanding ?? false) ? 'landing-active' : '' }}"
+             @if($heroImageUrl) style="background-image: url('{{ $heroImageUrl }}');" @endif>
         @if($isLanding ?? false)
             {{-- Landing: title on left + inline cotizar form on right --}}
             <div class="landing-hero-layout">
