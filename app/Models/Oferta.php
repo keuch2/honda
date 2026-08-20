@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesMediaUrl;
 use Illuminate\Database\Eloquent\Model;
 
 class Oferta extends Model
 {
+    use ResolvesMediaUrl;
+
     protected $fillable = [
         'imagen',
         'is_active',
@@ -29,9 +32,6 @@ class Oferta extends Model
 
     public function imagenUrl(): ?string
     {
-        if (!$this->imagen) {
-            return null;
-        }
-        return asset('storage/' . $this->imagen);
+        return $this->resolveMediaUrl($this->imagen);
     }
 }

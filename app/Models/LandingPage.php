@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesMediaUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class LandingPage extends Model
 {
     use HasFactory;
+    use ResolvesMediaUrl;
 
     protected $fillable = [
         'modelo_id',
@@ -52,10 +54,6 @@ class LandingPage extends Model
 
     public function heroImageUrl(): ?string
     {
-        if ($this->hero_image) {
-            return str_starts_with($this->hero_image, 'http') ? $this->hero_image : asset($this->hero_image);
-        }
-
-        return $this->modelo?->heroImageUrl();
+        return $this->resolveMediaUrl($this->hero_image) ?? $this->modelo?->heroImageUrl();
     }
 }

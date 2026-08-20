@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesMediaUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Modelo extends Model
 {
     use HasFactory;
+    use ResolvesMediaUrl;
 
     protected $fillable = [
         'slug',
@@ -61,56 +63,21 @@ class Modelo extends Model
 
     public function displayName(): string
     {
-        return $this->nombre . ($this->anio ? ' ' . $this->anio : '');
+        return $this->nombre.($this->anio ? ' '.$this->anio : '');
     }
 
     public function heroImageUrl(): ?string
     {
-        if (!$this->hero_image) {
-            return null;
-        }
-
-        if (str_starts_with($this->hero_image, 'http')) {
-            return $this->hero_image;
-        }
-
-        return asset('storage/' . $this->hero_image);
+        return $this->resolveMediaUrl($this->hero_image);
     }
 
     public function cardImageUrl(): ?string
     {
-        if (!$this->card_image) {
-            return null;
-        }
-
-        return asset('storage/' . $this->card_image);
+        return $this->resolveMediaUrl($this->card_image);
     }
 
     public function fichaTecnicaUrl(): ?string
     {
-        if (!$this->ficha_tecnica_pdf) {
-            return null;
-        }
-
-        $path = $this->ficha_tecnica_pdf;
-
-        // Already an absolute URL: use as-is.
-        if (preg_match('#^https?://#i', $path)) {
-            return $path;
-        }
-
-        // Legacy values point at a real file under public/ (e.g. assets/...),
-        // not at the public storage disk. Serve those directly without the
-        // storage/ prefix. Files uploaded via the admin are stored on the
-        // 'public' disk and live under storage/ as usual.
-        if (str_starts_with($path, 'storage/')) {
-            return asset($path);
-        }
-
-        if (file_exists(public_path($path))) {
-            return asset($path);
-        }
-
-        return asset('storage/' . $path);
+        return $this->resolveMediaUrl($this->ficha_tecnica_pdf);
     }
 }

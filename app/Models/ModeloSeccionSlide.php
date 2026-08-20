@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesMediaUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ModeloSeccionSlide extends Model
 {
     use HasFactory;
+    use ResolvesMediaUrl;
 
     protected $fillable = [
         'modelo_seccion_id',
@@ -26,14 +28,6 @@ class ModeloSeccionSlide extends Model
 
     public function imagenUrl(): ?string
     {
-        if (!$this->imagen) {
-            return null;
-        }
-
-        if (str_starts_with($this->imagen, 'http')) {
-            return $this->imagen;
-        }
-
-        return asset($this->imagen);
+        return $this->resolveMediaUrl($this->imagen);
     }
 }
