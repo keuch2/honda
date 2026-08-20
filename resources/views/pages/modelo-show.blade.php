@@ -252,7 +252,7 @@
                     $isTextLeft = $seccion->layout === 'text-left';
                 @endphp
 
-                <div id="{{ $carouselId }}" @if(!$isTextLeft) style="display: grid; grid-template-columns: 60% 40%; gap: 0; align-items: stretch;" @endif>
+                <div id="{{ $carouselId }}" class="carousel-modelo {{ $isTextLeft ? 'layout-text-left' : 'layout-image-left' }}">
                     @if(!$isTextLeft)
                         <div class="carousel-images-diseno">
                             @foreach($seccion->slides as $slideIndex => $slide)

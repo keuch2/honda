@@ -3478,3 +3478,52 @@ html {
         grid-template-columns: 1fr !important;
     }
 }
+
+/* ========================================
+   CARRUSELES DE MODELOS DINÁMICOS (por clase)
+   Las secciones creadas desde el admin generan IDs variables
+   (p.ej. #carouselMotorización), así que el layout se define
+   por clase en lugar de por ID.
+   ======================================== */
+
+.carousel-modelo.layout-text-left {
+    display: grid;
+    grid-template-columns: 40% 60% !important;
+    gap: 0;
+    align-items: stretch;
+}
+
+.carousel-modelo.layout-image-left {
+    display: grid;
+    grid-template-columns: 60% 40% !important;
+    gap: 0;
+    align-items: stretch;
+}
+
+.carousel-modelo .carousel-content-wrapper {
+    padding: 0;
+}
+
+.carousel-modelo .carousel-content-wrapper h2,
+.carousel-modelo .carousel-content-wrapper .carousel-content-diseno {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+@media (max-width: 768px) {
+    .carousel-modelo.layout-text-left,
+    .carousel-modelo.layout-image-left {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .carousel-modelo .carousel-content-wrapper {
+        padding: 20px;
+    }
+
+    .carousel-modelo .carousel-images-diseno {
+        height: 300px !important;
+        order: -1;
+        margin-bottom: 20px;
+    }
+}
