@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\HomepageSlideController as AdminHomepageSlideController;
 use App\Http\Controllers\Admin\LandingPageController as AdminLandingPageController;
 use App\Http\Controllers\Admin\LeadController as AdminLeadController;
 use App\Http\Controllers\Admin\ModeloController as AdminModeloController;
@@ -18,7 +19,9 @@ use App\Http\Controllers\UsadoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('home.index');
+    return view('home.index', [
+        'heroSlides' => \App\Models\HomepageSlide::activos()->ordenados()->get(),
+    ]);
 })->name('home');
 
 // Páginas estáticas
@@ -171,6 +174,14 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     Route::delete('ubicaciones/{ubicacion}', [AdminUbicacionController::class, 'destroy'])->name('ubicaciones.destroy');
 
     // Ofertas y Campañas
+    Route::get('homepage', [AdminHomepageSlideController::class, 'index'])->name('homepage.index');
+    Route::get('homepage/create', [AdminHomepageSlideController::class, 'create'])->name('homepage.create');
+    Route::post('homepage', [AdminHomepageSlideController::class, 'store'])->name('homepage.store');
+    Route::get('homepage/{slide}/edit', [AdminHomepageSlideController::class, 'edit'])->name('homepage.edit');
+    Route::put('homepage/{slide}', [AdminHomepageSlideController::class, 'update'])->name('homepage.update');
+    Route::patch('homepage/{slide}', [AdminHomepageSlideController::class, 'update']);
+    Route::delete('homepage/{slide}', [AdminHomepageSlideController::class, 'destroy'])->name('homepage.destroy');
+
     Route::get('ofertas', [AdminOfertaController::class, 'index'])->name('ofertas.index');
     Route::get('ofertas/create', [AdminOfertaController::class, 'create'])->name('ofertas.create');
     Route::post('ofertas', [AdminOfertaController::class, 'store'])->name('ofertas.store');

@@ -3,42 +3,34 @@
 @section('title', 'Inicio | Honda Paraguay')
 
 @section('content')
+    @if(($heroSlides ?? collect())->isNotEmpty())
     <section class="hero-carousel">
         <div class="hero-carousel-container">
             <div class="hero-carousel-track">
-                <div class="hero-slide active">
-                    <img src="{{ asset('assets/images/modelos/wr-v/hero-wr-v-desktop.jpg') }}" alt="Honda Portada">
-                </div>
-                <div class="hero-slide">
-                    <img src="{{ asset('assets/images/portadas/PORTADAS-01.jpg') }}" alt="Honda Portada 1">
-                </div>
-                <div class="hero-slide">
-                    <img src="{{ asset('assets/images/portadas/PORTADAS-02.jpg') }}" alt="Honda Portada 2">
-                </div>
-                <div class="hero-slide">
-                    <img src="{{ asset('assets/images/portadas/PORTADAS-03.jpg') }}" alt="Honda Portada 3">
-                </div>
-                <div class="hero-slide">
-                    <img src="{{ asset('assets/images/portadas/PORTADAS-04.jpg') }}" alt="Honda Portada 4">
-                </div>
+                @foreach($heroSlides as $index => $slide)
+                    <div class="hero-slide {{ $index === 0 ? 'active' : '' }}">
+                        <img src="{{ $slide->imagenUrl() }}" alt="{{ $slide->imagen_alt ?? 'Honda Portada' }}">
+                    </div>
+                @endforeach
             </div>
 
-            <button class="hero-carousel-btn prev" aria-label="Anterior">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="hero-carousel-btn next" aria-label="Siguiente">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+            @if($heroSlides->count() > 1)
+                <button class="hero-carousel-btn prev" aria-label="Anterior">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="hero-carousel-btn next" aria-label="Siguiente">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
 
-            <div class="hero-carousel-indicators">
-                <button class="indicator active" data-slide="0" aria-label="Ir a slide 1"></button>
-                <button class="indicator" data-slide="1" aria-label="Ir a slide 2"></button>
-                <button class="indicator" data-slide="2" aria-label="Ir a slide 3"></button>
-                <button class="indicator" data-slide="3" aria-label="Ir a slide 4"></button>
-                <button class="indicator" data-slide="5" aria-label="Ir a slide 5"></button>
-            </div>
+                <div class="hero-carousel-indicators">
+                    @foreach($heroSlides as $index => $slide)
+                        <button class="indicator {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}" aria-label="Ir a slide {{ $index + 1 }}"></button>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </section>
+    @endif
 
     <section class="modelos-carousel">
         <div class="container">

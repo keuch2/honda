@@ -55,12 +55,13 @@
                     {{-- Sitio --}}
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md {{ request()->is('admin/ubicaciones*','admin/users*','admin/settings*') ? 'text-gray-900 border-b-2 border-indigo-500' : 'text-gray-500 hover:text-gray-700' }} transition">
+                            <button class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md {{ request()->is('admin/homepage*','admin/ubicaciones*','admin/users*','admin/settings*') ? 'text-gray-900 border-b-2 border-indigo-500' : 'text-gray-500 hover:text-gray-700' }} transition">
                                 Sitio
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                         </x-slot>
                         <x-slot name="content">
+                            <x-dropdown-link :href="url('admin/homepage')" :active="request()->is('admin/homepage*')">Homepage</x-dropdown-link>
                             <x-dropdown-link :href="url('admin/ubicaciones')" :active="request()->is('admin/ubicaciones*')">Ubicaciones</x-dropdown-link>
                             <x-dropdown-link :href="url('admin/users')" :active="request()->is('admin/users*')">Usuarios</x-dropdown-link>
                             <x-dropdown-link :href="url('admin/settings')" :active="request()->is('admin/settings*')">Configuración</x-dropdown-link>
@@ -151,6 +152,9 @@
             </x-responsive-nav-link>
 
             <div class="px-4 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Sitio</div>
+            <x-responsive-nav-link :href="url('admin/homepage')" :active="request()->is('admin/homepage*')">
+                Homepage
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="url('admin/ubicaciones')" :active="request()->is('admin/ubicaciones*')">
                 Ubicaciones
             </x-responsive-nav-link>

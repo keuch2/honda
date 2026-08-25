@@ -556,8 +556,12 @@ document.addEventListener('DOMContentLoaded', function() {
         heroIndicators.forEach(indicator => indicator.classList.remove('active'));
         
         // Agregar clase active al slide e indicador actual
-        heroSlides[index].classList.add('active');
-        heroIndicators[index].classList.add('active');
+        if (heroSlides[index]) {
+            heroSlides[index].classList.add('active');
+        }
+        if (heroIndicators[index]) {
+            heroIndicators[index].classList.add('active');
+        }
         
         currentSlide = index;
     }
@@ -617,8 +621,8 @@ document.addEventListener('DOMContentLoaded', function() {
         startAutoplay();
     }
     
-    // Iniciar autoplay si hay slides
-    if (heroSlides.length > 0) {
+    // Iniciar autoplay si hay más de un slide
+    if (heroSlides.length > 1) {
         startAutoplay();
         
         // Pausar autoplay cuando el mouse está sobre el carrusel
